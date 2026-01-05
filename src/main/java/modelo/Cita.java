@@ -1,29 +1,42 @@
 package modelo;
 
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;
 
+@Entity
+@Table(name = "citas")
 public class Cita implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idCita;
+
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
     private Date fecha;
+
+    @Column(nullable = false)
     private Time hora;
+
     private String motivo;
-    private String estado;
+
+    private String estado; // "AGENDADA", "ATENDIDA", "CANCELADA"
+
+    @OneToOne(mappedBy = "cita", cascade = CascadeType.ALL)
     private Consulta consulta;
 
-    public Cita() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "idMascota")
+    private Mascota mascota;
 
-    public Cita(int idCita, Date fecha, Time hora, String motivo, String estado) {
-        super();
-        this.idCita = idCita;
-        this.fecha = fecha;
-        this.hora = hora;
-        this.motivo = motivo;
-        this.estado = estado;
+    @ManyToOne
+    @JoinColumn(name = "idVeterinario")
+    private Veterinario veterinario;
+
+    public Cita() {
     }
 
     public int getIdCita() {
@@ -74,8 +87,19 @@ public class Cita implements Serializable {
         this.consulta = consulta;
     }
 
-    @Override
-    public String toString() {
-        return "Cita [idCita=" + idCita + ", fecha=" + fecha + ", estado=" + estado + "]";
+    public Mascota getMascota() {
+        return mascota;
+    }
+
+    public void setMascota(Mascota mascota) {
+        this.mascota = mascota;
+    }
+
+    public Veterinario getVeterinario() {
+        return veterinario;
+    }
+
+    public void setVeterinario(Veterinario veterinario) {
+        this.veterinario = veterinario;
     }
 }

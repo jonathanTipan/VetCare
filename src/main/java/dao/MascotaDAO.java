@@ -1,31 +1,76 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import java.util.Collections;
+import java.util.List;
 import modelo.Mascota;
-import soporte.ConexionBDD;
+import soporte.JPAUtil;
 
 public class MascotaDAO {
-    public boolean guardar(Mascota m, int idCliente) {
-        Connection conn = ConexionBDD.getInstance().conectar();
-        String sql = "INSERT INTO Mascota (nombre, especie, raza, fechaNac, peso, foto, idCliente) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, m.getNombre());
-            pstmt.setString(2, m.getEspecie());
-            pstmt.setString(3, m.getRaza());
-            // Conversión de Date util a sql
-            pstmt.setDate(4, new java.sql.Date(m.getFechaNac().getTime()));
-            pstmt.setDouble(5, m.getPeso());
-            pstmt.setBytes(6, new byte[] {}); // Placeholder for Byte/Blob, assuming empty for now or null
-            pstmt.setInt(7, idCliente);
-
-            int rows = pstmt.executeUpdate();
-            return rows > 0;
-        } catch (SQLException e) {
+    public boolean guardar(Mascota m) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            if (m.getId() != 0) {
+                em.merge(m);
+            } else {
+                em.persist(m);
+            }
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            if (tx.isActive())
+                tx.rollback();
             e.printStackTrace();
             return false;
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Mascota> buscarPorCliente(int idCliente) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT m FROM Mascota m WHERE m.cliente.id = :idCliente", Mascota.class)
+                    .setParameter("idCliente", idCliente)
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public Mascota buscarPorId(int id) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.find(Mascota.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
+    public boolean eliminar(int id) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            Mascota m = em.find(Mascota.class, id);
+            if (m != null) {
+                em.remove(m);
+            }
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            if (tx.isActive())
+                tx.rollback();
+            return false;
+        } finally {
+            em.close();
         }
     }
 }

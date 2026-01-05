@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+
+    <persistence-unit name="VetCarePU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        
+        <class>modelo.Usuario</class>
+        <class>modelo.Mascota</class>
+        <class>modelo.Cita</class>
+        <class>modelo.Consulta</class>
+        <class>modelo.Receta</class>
+
+        <properties>
+            <!-- JDBC Database Connection -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver" />
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5433/VetCare" />
+            <property name="jakarta.persistence.jdbc.user" value="postgres" />
+            <property name="jakarta.persistence.jdbc.password" value="postgres" />
+
+            <!-- Hibernate Properties -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.format_sql" value="true" />
+            
+            <!-- Update database schema automatically -->
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+            
+            <!-- Context propagation -->
+            <property name="hibernate.current_session_context_class" value="thread"/>
+        </properties>
+    </persistence-unit>
+</persistence>

@@ -1,28 +1,42 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import modelo.Consulta;
-import soporte.ConexionBDD;
+import modelo.Cita;
+import soporte.JPAUtil;
 
 public class ConsultaDAO {
-    public boolean guardarConsulta(Consulta c) {
-        Connection conn = ConexionBDD.getInstance().conectar();
-        String sql = "INSERT INTO Consulta (fecha, hora, sintomas, diagnostico, tratamiento) VALUES (?, ?, ?, ?, ?)";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setDate(1, new java.sql.Date(c.getFecha().getTime()));
-            pstmt.setTime(2, c.getHora());
-            pstmt.setString(3, c.getSintomas());
-            pstmt.setString(4, c.getDiagnostico());
-            pstmt.setString(5, c.getTratamiento());
+    public boolean guardar(Consulta consulta) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            // Save consultation
+            em.persist(consulta);
 
-            int rows = pstmt.executeUpdate();
-            return rows > 0;
-        } catch (SQLException e) {
+            // Update appointment status to ATENDIDA
+            Cita c = consulta.getCita();
+            if (c != null) {
+                // Merge Cita if detached, though cascading might handle it if set up right.
+                // Safest to just find and set.
+                Cita managedCita = em.find(Cita.class, c.getIdCita());
+                if (managedCita != null) {
+                    managedCita.setEstado("ATENDIDA");
+                    managedCita.setConsulta(consulta);
+                }
+            }
+
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            if (tx.isActive())
+                tx.rollback();
             e.printStackTrace();
             return false;
+        } finally {
+            em.close();
         }
     }
 }

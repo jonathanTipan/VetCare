@@ -1,59 +1,48 @@
 package controlador;
 
 import java.io.IOException;
-import java.sql.Time;
-import java.util.Date;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import modelo.Consulta;
+import modelo.Cita;
 import dao.ConsultaDAO;
-import dao.CitaDAO;
 
 @WebServlet("/ControlConsulta")
 public class ControlConsulta extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private ConsultaDAO consultaDAO;
-    private CitaDAO citaDAO;
 
     public ControlConsulta() {
         super();
         this.consultaDAO = new ConsultaDAO();
-        this.citaDAO = new CitaDAO();
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("vista/registrarConsulta.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // Extract params
+        String sintomas = req.getParameter("sintomas");
         String diagnostico = req.getParameter("diagnostico");
         String tratamiento = req.getParameter("tratamiento");
-        String sintomas = req.getParameter("sintomas");
+        String observaciones = req.getParameter("observaciones");
+        String idCitaStr = req.getParameter("idCita");
 
-        int idCita = 0;
-        try {
-            idCita = Integer.parseInt(req.getParameter("idCita"));
-        } catch (NumberFormatException e) {
-            // Handle error
-        }
-
-        Consulta c = new Consulta(new Date(), new Time(System.currentTimeMillis()), diagnostico, tratamiento);
+        Consulta c = new Consulta();
         c.setSintomas(sintomas);
+        c.setDiagnostico(diagnostico);
+        c.setTratamiento(tratamiento);
+        c.setObservaciones(observaciones);
 
-        boolean guardado = consultaDAO.guardarConsulta(c);
-        if (guardado) {
-            citaDAO.actualizarEstado(idCita, "Atendida");
-            req.setAttribute("mensaje", "Consulta registrada con éxito");
-        } else {
-            req.setAttribute("mensaje", "Error al registrar consulta");
+        if (idCitaStr != null && !idCitaStr.isEmpty()) {
+            Cita cita = new Cita();
+            cita.setIdCita(Integer.parseInt(idCitaStr));
+            c.setCita(cita);
         }
 
+        boolean exito = consultaDAO.guardar(c);
+
+        req.setAttribute("mensaje", exito ? "Consulta registrada" : "Error al registrar");
         req.getRequestDispatcher("vista/registrarConsulta.jsp").forward(req, resp);
     }
 }

@@ -1,0 +1,28 @@
+# Maven
+target/
+
+# Eclipse
+.settings/
+.classpath
+.project
+bin/
+build/
+
+# IDE specific files
+*.iml
+.idea/
+.vscode/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Compiled classes
+*.class
+
+# Logs
+*.log
+
+# Carpetas de referencia (Solicitado por el usuario)
+appwebpracticas/
+PlantillasHTML/

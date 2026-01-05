@@ -1,23 +1,44 @@
 package modelo;
 
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+@Entity
+@Table(name = "mascotas")
 public class Mascota implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(nullable = false)
     private String nombre;
+
+    @Column(nullable = false)
     private String especie;
+
     private String raza;
+
+    @Temporal(TemporalType.DATE)
     private Date fechaNac;
+
     private double peso;
-    private Byte foto;
+
+    // Storing photo as byte array for simplicity, better as external URL in real
+    // app
+    @Lob
+    private Byte[] foto;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idCliente")
+    private Cliente cliente;
 
     public Mascota() {
     }
 
     public Mascota(String nombre, String especie, String raza, Date fechaNac, double peso) {
-        super();
         this.nombre = nombre;
         this.especie = especie;
         this.raza = raza;
@@ -25,14 +46,12 @@ public class Mascota implements Serializable {
         this.peso = peso;
     }
 
-    public Mascota(String nombre, String especie, String raza, Date fechaNac, double peso, Byte foto) {
-        super();
-        this.nombre = nombre;
-        this.especie = especie;
-        this.raza = raza;
-        this.fechaNac = fechaNac;
-        this.peso = peso;
-        this.foto = foto;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -75,16 +94,24 @@ public class Mascota implements Serializable {
         this.peso = peso;
     }
 
-    public Byte getFoto() {
+    public Byte[] getFoto() {
         return foto;
     }
 
-    public void setFoto(Byte foto) {
+    public void setFoto(Byte[] foto) {
         this.foto = foto;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
     @Override
     public String toString() {
-        return "Mascota [nombre=" + nombre + ", especie=" + especie + ", raza=" + raza + ", peso=" + peso + "]";
+        return "Mascota [id=" + id + ", nombre=" + nombre + ", especie=" + especie + "]";
     }
 }

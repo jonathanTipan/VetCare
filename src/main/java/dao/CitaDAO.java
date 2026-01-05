@@ -1,42 +1,70 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import soporte.ConexionBDD;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import java.util.Date;
+import java.util.List;
+import modelo.Cita;
+import soporte.JPAUtil;
 
 public class CitaDAO {
-    public boolean actualizarEstado(int idCita, String estado) {
-        Connection conn = ConexionBDD.getInstance().conectar();
-        String sql = "UPDATE Cita SET estado = ? WHERE idCita = ?";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, estado);
-            pstmt.setInt(2, idCita);
-
-            int rows = pstmt.executeUpdate();
-            return rows > 0;
-        } catch (SQLException e) {
+    public boolean guardar(Cita c) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            if (c.getIdCita() != 0) {
+                em.merge(c);
+            } else {
+                em.persist(c);
+            }
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            if (tx.isActive())
+                tx.rollback();
             e.printStackTrace();
             return false;
+        } finally {
+            em.close();
         }
     }
 
-    public boolean guardar(modelo.Cita c) {
-        Connection conn = ConexionBDD.getInstance().conectar();
-        String sql = "INSERT INTO Cita (fecha, hora, motivo, estado) VALUES (?, ?, ?, ?)";
+    /**
+     * List appointments by veterinarian
+     */
+    public List<Cita> listarPorVeterinario(int idVeterinario) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT c FROM Cita c WHERE c.veterinario.id = :idVet", Cita.class)
+                    .setParameter("idVet", idVeterinario)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setDate(1, new java.sql.Date(c.getFecha().getTime()));
-            pstmt.setTime(2, c.getHora());
-            pstmt.setString(3, c.getMotivo());
-            pstmt.setString(4, "Pendiente");
+    /**
+     * List appointments by client (through pets)
+     */
+    public List<Cita> listarPorCliente(int idCliente) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT c FROM Cita c WHERE c.mascota.cliente.id = :idCliente", Cita.class)
+                    .setParameter("idCliente", idCliente)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
 
-            int rows = pstmt.executeUpdate();
-            return rows > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+    public Cita buscarPorId(int id) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.find(Cita.class, id);
+        } finally {
+            em.close();
         }
     }
 }

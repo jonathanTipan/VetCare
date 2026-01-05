@@ -1,49 +1,27 @@
 package modelo;
 
-import java.io.Serializable;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cliente implements Serializable {
+@Entity
+@Table(name = "clientes")
+@PrimaryKeyJoinColumn(name = "idUsuario")
+public class Cliente extends Usuario {
     private static final long serialVersionUID = 1L;
 
-    private int idCliente;
-    private String nombre;
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Mascota> mascotas;
 
     public Cliente() {
-        this.mascotas = new ArrayList<>();
-    }
-
-    public Cliente(int idCliente, String nombre) {
         super();
-        this.idCliente = idCliente;
-        this.nombre = nombre;
         this.mascotas = new ArrayList<>();
+        this.setRol("CLIENTE");
     }
 
-    public int getIdentificacion() {
-        return idCliente;
-    }
-
-    public void agregarMascota(Mascota m) {
-        this.mascotas.add(m);
-    }
-
-    public int getIdCliente() {
-        return idCliente;
-    }
-
-    public void setIdCliente(int idCliente) {
-        this.idCliente = idCliente;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public Cliente(String nombre, String usuario, String clave) {
+        super(nombre, usuario, clave, "CLIENTE");
+        this.mascotas = new ArrayList<>();
     }
 
     public List<Mascota> getMascotas() {
@@ -54,8 +32,11 @@ public class Cliente implements Serializable {
         this.mascotas = mascotas;
     }
 
-    @Override
-    public String toString() {
-        return "Cliente [idCliente=" + idCliente + ", nombre=" + nombre + "]";
+    public void agregarMascota(Mascota m) {
+        if (this.mascotas == null) {
+            this.mascotas = new ArrayList<>();
+        }
+        this.mascotas.add(m);
+        m.setCliente(this);
     }
 }

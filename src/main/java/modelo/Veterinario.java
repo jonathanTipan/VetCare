@@ -1,46 +1,59 @@
 package modelo;
 
-import java.io.Serializable;
+import jakarta.persistence.*;
 import java.util.Date;
 
-public class Veterinario implements Serializable {
+@Entity
+@Table(name = "veterinarios")
+@PrimaryKeyJoinColumn(name = "idUsuario")
+public class Veterinario extends Usuario {
     private static final long serialVersionUID = 1L;
 
-    private int idVet;
-    private String nombre;
+    @Column(name = "identificacion")
+    private String identificacion; // Specific field
+
+    @Column(name = "telefono")
+    private String telefono;
+
+    @Column(name = "especialidad")
+    private String especialidad;
 
     public Veterinario() {
-    }
-
-    public Veterinario(int idVet, String nombre) {
         super();
-        this.idVet = idVet;
-        this.nombre = nombre;
+        this.setRol("VETERINARIO");
     }
 
-    public int getIdVet() {
-        return idVet;
+    public Veterinario(String nombre, String usuario, String clave, String identificacion) {
+        super(nombre, usuario, clave, "VETERINARIO");
+        this.identificacion = identificacion;
     }
 
-    public void setIdVet(int idVet) {
-        this.idVet = idVet;
+    public String getIdentificacion() {
+        return identificacion;
     }
 
-    public String getNombre() {
-        return nombre;
+    public void setIdentificacion(String identificacion) {
+        this.identificacion = identificacion;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getEspecialidad() {
+        return especialidad;
+    }
+
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
     }
 
     public boolean validarCupo(Date fecha) {
-        // Validation logic
+        // Logic to check availability in DB could be here or in Service
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Veterinario [idVet=" + idVet + ", nombre=" + nombre + "]";
     }
 }

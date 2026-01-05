@@ -1,43 +1,46 @@
 package modelo;
 
+import jakarta.persistence.*;
 import java.io.Serializable;
-import java.sql.Time;
-import java.util.Date;
+import java.util.List;
 
+@Entity
+@Table(name = "consultas")
 public class Consulta implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Date fecha;
-    private Time hora;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(length = 1000)
     private String sintomas;
+
+    @Column(length = 1000)
     private String diagnostico;
+
+    @Column(length = 1000)
     private String tratamiento;
+
+    @Column(length = 1000)
+    private String observaciones;
+
+    @OneToOne
+    @JoinColumn(name = "idCita", unique = true)
+    private Cita cita;
+
+    @OneToMany(mappedBy = "consulta", cascade = CascadeType.ALL)
+    private List<Receta> recetas;
 
     public Consulta() {
     }
 
-    public Consulta(Date fecha, Time hora, String diagnostico, String tratamiento) {
-        super();
-        this.fecha = fecha;
-        this.hora = hora;
-        this.diagnostico = diagnostico;
-        this.tratamiento = tratamiento;
+    public int getId() {
+        return id;
     }
 
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-    public Time getHora() {
-        return hora;
-    }
-
-    public void setHora(Time hora) {
-        this.hora = hora;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getSintomas() {
@@ -64,8 +67,27 @@ public class Consulta implements Serializable {
         this.tratamiento = tratamiento;
     }
 
-    @Override
-    public String toString() {
-        return "Consulta [fecha=" + fecha + ", hora=" + hora + ", diagnostico=" + diagnostico + "]";
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
+
+    public Cita getCita() {
+        return cita;
+    }
+
+    public void setCita(Cita cita) {
+        this.cita = cita;
+    }
+
+    public List<Receta> getRecetas() {
+        return recetas;
+    }
+
+    public void setRecetas(List<Receta> recetas) {
+        this.recetas = recetas;
     }
 }
