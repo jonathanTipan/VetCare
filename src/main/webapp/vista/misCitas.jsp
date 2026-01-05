@@ -11,7 +11,8 @@
 
         <body class="font-main bg-secondary main-layout">
             <% Usuario u=(Usuario) session.getAttribute("usuario"); String rol=(String) session.getAttribute("rol");
-                String homeLink="home-cliente.jsp" ; if("VETERINARIO".equals(rol)) homeLink="home-veterinario.jsp" ; %>
+                String homeLink=request.getContextPath() + "/vista/home-cliente.jsp" ; if("VETERINARIO".equals(rol))
+                homeLink=request.getContextPath() + "/vista/home-veterinario.jsp" ; %>
                 <header class="navbar">
                     <div class="container flex-container justify-space-between align-center">
                         <div class="navbar-brand">Vet<span class="text-highlight">Care</span> | <%= rol %>
@@ -51,19 +52,23 @@
                                 <% } %>
                         </div>
 
-                        <div class="card bg-light">
-                            <table class="table">
+                        <div class="card">
+                            <table class="table text-light">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Fecha</th>
-                                        <th>Hora</th>
-                                        <th>Mascota</th>
-                                        <th>Motivo</th>
-                                        <th>Estado</th>
                                         <% if("VETERINARIO".equals(rol)) { %>
-                                            <th>Acción</th>
-                                            <% } %>
+                                            <th>Hora</th>
+                                            <th>Mascota</th>
+                                            <th>Cliente</th>
+                                            <th>Motivo</th>
+                                            <th>Acciones</th>
+                                            <% } else { %>
+                                                <th>Fecha</th>
+                                                <th>Hora</th>
+                                                <th>Mascota</th>
+                                                <th>Motivo</th>
+                                                <th>Estado</th>
+                                                <% } %>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -72,39 +77,53 @@
                                             for(Cita c : lista) {
                                             %>
                                             <tr>
-                                                <td>
-                                                    <%= c.getIdCita() %>
-                                                </td>
-                                                <td>
-                                                    <%= c.getFecha() %>
-                                                </td>
-                                                <td>
-                                                    <%= c.getHora() %>
-                                                </td>
-                                                <td>
-                                                    <%= (c.getMascota() !=null) ? c.getMascota().getNombre() : "N/A" %>
-                                                </td>
-                                                <td>
-                                                    <%= c.getMotivo() %>
-                                                </td>
-                                                <td><span class="text-highlight font-bold">
-                                                        <%= c.getEstado() %>
-                                                    </span></td>
                                                 <% if("VETERINARIO".equals(rol)) { %>
+                                                    <td>
+                                                        <%= c.getHora() %>
+                                                    </td>
+                                                    <td>
+                                                        <%= (c.getMascota() !=null) ? c.getMascota().getNombre() : "N/A"
+                                                            %>
+                                                    </td>
+                                                    <td>
+                                                        <%= (c.getMascota() !=null && c.getMascota().getCliente()
+                                                            !=null) ? c.getMascota().getCliente().getNombre() : "N/A" %>
+                                                    </td>
+                                                    <td>
+                                                        <%= c.getMotivo() %>
+                                                    </td>
                                                     <td>
                                                         <% if(!"ATENDIDA".equals(c.getEstado())) { %>
                                                             <a class="btn btn-primary padding-vertical"
-                                                                href="<%=request.getContextPath()%>/ControlConsulta?accion=formulario&idCita=<%=c.getIdCita()%>">Atender</a>
+                                                                style="background-color: var(--color-highlight); color: var(--color-dark);"
+                                                                href="<%=request.getContextPath()%>/ControlConsulta?accion=formulario&idCita=<%=c.getIdCita()%>">Atender
+                                                                Consulta</a>
                                                             <% } else { %>
                                                                 <span class="text-muted">Finalizada</span>
                                                                 <% } %>
                                                     </td>
-                                                    <% } %>
+                                                    <% } else { %>
+                                                        <td>
+                                                            <%= c.getFecha() %>
+                                                        </td>
+                                                        <td>
+                                                            <%= c.getHora() %>
+                                                        </td>
+                                                        <td>
+                                                            <%= (c.getMascota() !=null) ? c.getMascota().getNombre()
+                                                                : "N/A" %>
+                                                        </td>
+                                                        <td>
+                                                            <%= c.getMotivo() %>
+                                                        </td>
+                                                        <td><span class="text-highlight font-bold">
+                                                                <%= c.getEstado() %>
+                                                            </span></td>
+                                                        <% } %>
                                             </tr>
                                             <% } } else { %>
                                                 <tr>
-                                                    <td colspan="<%= " VETERINARIO".equals(rol) ? 7 : 6 %>"
-                                                        class="text-center">No hay citas registradas.</td>
+                                                    <td colspan="5" class="text-center">No hay citas registradas.</td>
                                                 </tr>
                                                 <% } %>
                                 </tbody>

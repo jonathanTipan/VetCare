@@ -15,7 +15,8 @@
                 <div class="navbar-brand">Vet<span class="text-highlight">Care</span> | Cliente</div>
                 <nav>
                     <ul class="list-style-none nav-links flex-container align-center">
-                        <li><a class="no-decoration text-light" href="home-cliente.jsp">Home</a></li>
+                        <li><a class="no-decoration text-light"
+                                href="<%=request.getContextPath()%>/vista/home-cliente.jsp">Home</a></li>
                         <li><a class="no-decoration text-light"
                                 href="<%=request.getContextPath()%>/ControlMascota?accion=listar">Mis Mascotas</a></li>
                         <li><a class="no-decoration text-light"
@@ -30,8 +31,8 @@
 
         <main class="main-content">
             <section class="container margin-custom">
-                <div class="card bg-light">
-                    <h1 class="margin-custom text-dark">Agendar Cita</h1>
+                <div class="card">
+                    <h1 class="margin-custom text-light">Agendar Cita</h1>
 
                     <% if(request.getAttribute("mensaje") !=null) { %>
                         <div class="padding-custom bg-highlight rounded-lg margin-custom"

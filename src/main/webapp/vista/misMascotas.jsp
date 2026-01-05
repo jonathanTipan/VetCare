@@ -38,7 +38,7 @@
                             Mascota</a>
                     </div>
 
-                    <div class="card bg-light">
+                    <div class="card">
                         <% if(request.getAttribute("mensaje") !=null) { %>
                             <div class="padding-custom" style="color: green; font-weight: bold;">
                                 <%= request.getAttribute("mensaje") %>

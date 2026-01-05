@@ -43,12 +43,12 @@
                 
                 <div class="form-group">
                     <label class="form-label" for="usuario">Usuario</label>
-                    <input class="form-control" type="text" id="usuario" name="usuario" placeholder="correo@ejemplo.com" required>
+                    <input class="form-control" type="text" id="usuario" name="usuario" required>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="clave">Contraseña</label>
-                    <input class="form-control" type="password" id="clave" name="clave" placeholder="********" required>
+                    <input class="form-control" type="password" id="clave" name="clave" required>
                 </div>
 
                 <div class="form-group">

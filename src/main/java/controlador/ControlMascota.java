@@ -100,6 +100,11 @@ public class ControlMascota extends HttpServlet {
             req.setAttribute("mensaje", "Error al guardar");
         }
 
+        // Refresh list before forwarding
+        if (u != null) {
+            req.setAttribute("mascotas", mascotaDAO.buscarPorCliente(u.getId()));
+        }
+
         req.getRequestDispatcher("vista/misMascotas.jsp").forward(req, resp);
     }
 

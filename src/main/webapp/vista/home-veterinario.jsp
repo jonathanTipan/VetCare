@@ -14,7 +14,8 @@
                 <div class="navbar-brand">Vet<span class="text-highlight">Care</span> | Veterinario</div>
                 <nav>
                     <ul class="list-style-none nav-links flex-container align-center">
-                        <li><a class="no-decoration text-light" href="home-veterinario.jsp">Home</a></li>
+                        <li><a class="no-decoration text-light"
+                                href="<%=request.getContextPath()%>/vista/home-veterinario.jsp">Home</a></li>
                         <li><a class="no-decoration text-light"
                                 href="<%=request.getContextPath()%>/ControlAgendamiento?accion=agenda">Mi Agenda</a>
                         </li>
@@ -34,12 +35,7 @@
                         <a class="btn btn-primary"
                             href="<%=request.getContextPath()%>/ControlAgendamiento?accion=agenda">Ver Agenda</a>
                     </div>
-                    <div class="card card-light">
-                        <h2>Registrar Consulta</h2>
-                        <p>Atender un paciente manualmente.</p>
-                        <a class="btn btn-primary"
-                            href="<%=request.getContextPath()%>/vista/registrarConsulta.jsp">Nueva Consulta</a>
-                    </div>
+
                 </div>
             </section>
         </main>

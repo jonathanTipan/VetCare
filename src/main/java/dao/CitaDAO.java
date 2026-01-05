@@ -37,7 +37,9 @@ public class CitaDAO {
     public List<Cita> listarPorVeterinario(int idVeterinario) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            return em.createQuery("SELECT c FROM Cita c WHERE c.veterinario.id = :idVet", Cita.class)
+            return em.createQuery(
+                    "SELECT c FROM Cita c JOIN FETCH c.mascota m JOIN FETCH m.cliente cl WHERE c.veterinario.id = :idVet ORDER BY c.fecha, c.hora",
+                    Cita.class)
                     .setParameter("idVet", idVeterinario)
                     .getResultList();
         } finally {

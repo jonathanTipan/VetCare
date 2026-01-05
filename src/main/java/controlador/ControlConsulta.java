@@ -21,6 +21,17 @@ public class ControlConsulta extends HttpServlet {
     }
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String accion = req.getParameter("accion");
+        if ("formulario".equals(accion)) {
+            // Forward to the JSP form
+            req.getRequestDispatcher("vista/registrarConsulta.jsp").forward(req, resp);
+        } else {
+            resp.sendRedirect("vista/home-veterinario.jsp");
+        }
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String sintomas = req.getParameter("sintomas");
         String diagnostico = req.getParameter("diagnostico");

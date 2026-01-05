@@ -5,7 +5,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "veterinarios")
-@PrimaryKeyJoinColumn(name = "idUsuario")
+@PrimaryKeyJoinColumn(name = "idusuario")
 public class Veterinario extends Usuario {
     private static final long serialVersionUID = 1L;
 

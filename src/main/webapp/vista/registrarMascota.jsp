@@ -30,8 +30,8 @@
 
         <main class="main-content">
             <section class="container margin-custom">
-                <div class="card bg-light">
-                    <h1 class="margin-custom text-dark">Registrar Mascota</h1>
+                <div class="card">
+                    <h1 class="margin-custom text-light">Registrar Mascota</h1>
 
                     <% if(request.getAttribute("mensaje") !=null) { %>
                         <div class="padding-custom bg-highlight rounded-lg margin-custom"
