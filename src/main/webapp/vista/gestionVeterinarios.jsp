@@ -15,7 +15,8 @@
                     <div class="navbar-brand">Vet<span class="text-highlight">Care</span> | Admin</div>
                     <nav>
                         <ul class="list-style-none nav-links flex-container align-center">
-                            <li><a class="no-decoration text-light" href="home-admin.jsp">Home</a></li>
+                            <li><a class="no-decoration text-light"
+                                    href="<%=request.getContextPath()%>/vista/home-admin.jsp">Home</a></li>
                             <li><a class="no-decoration text-light"
                                     href="<%=request.getContextPath()%>/ControlUsuario?accion=listar">Gestión de
                                     Veterinarios</a></li>
