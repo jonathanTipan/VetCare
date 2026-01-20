@@ -1,8 +1,23 @@
 package modelo;
 
-import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "mascotas")
@@ -13,6 +28,10 @@ public class Mascota implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cliente_cedula")
+    private Cliente cliente;
+
     @Column(nullable = false)
     private String nombre;
 
@@ -22,28 +41,30 @@ public class Mascota implements Serializable {
     private String raza;
 
     @Temporal(TemporalType.DATE)
-    private Date fechaNac;
+    @Column(name = "fechaNacimiento")
+    private Date fechaNacimiento;
+
+    private String sexo;
 
     private double peso;
 
-    // Storing photo as byte array for simplicity, better as external URL in real
-    // app
-    @Lob
-    private Byte[] foto;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idCliente")
-    private Cliente cliente;
+    @OneToMany(mappedBy = "mascota", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Consulta> consultas;
 
     public Mascota() {
+        this.consultas = new ArrayList<>();
     }
 
-    public Mascota(String nombre, String especie, String raza, Date fechaNac, double peso) {
+    public Mascota(Cliente cliente, String nombre, String especie, String raza, Date fechaNacimiento, String sexo,
+            double peso) {
+        this.cliente = cliente;
         this.nombre = nombre;
         this.especie = especie;
         this.raza = raza;
-        this.fechaNac = fechaNac;
+        this.fechaNacimiento = fechaNacimiento;
+        this.sexo = sexo;
         this.peso = peso;
+        this.consultas = new ArrayList<>();
     }
 
     public int getId() {
@@ -52,6 +73,14 @@ public class Mascota implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
     public String getNombre() {
@@ -78,12 +107,20 @@ public class Mascota implements Serializable {
         this.raza = raza;
     }
 
-    public Date getFechaNac() {
-        return fechaNac;
+    public Date getFechaNacimiento() {
+        return fechaNacimiento;
     }
 
-    public void setFechaNac(Date fechaNac) {
-        this.fechaNac = fechaNac;
+    public void setFechaNacimiento(Date fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
     }
 
     public double getPeso() {
@@ -94,20 +131,12 @@ public class Mascota implements Serializable {
         this.peso = peso;
     }
 
-    public Byte[] getFoto() {
-        return foto;
+    public List<Consulta> getConsultas() {
+        return consultas;
     }
 
-    public void setFoto(Byte[] foto) {
-        this.foto = foto;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setConsultas(List<Consulta> consultas) {
+        this.consultas = consultas;
     }
 
     @Override

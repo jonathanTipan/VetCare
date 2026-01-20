@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "clientes")
-@PrimaryKeyJoinColumn(name = "idUsuario")
 public class Cliente extends Usuario {
     private static final long serialVersionUID = 1L;
 
@@ -16,11 +14,10 @@ public class Cliente extends Usuario {
     public Cliente() {
         super();
         this.mascotas = new ArrayList<>();
-        this.setRol("CLIENTE");
     }
 
-    public Cliente(String nombre, String usuario, String clave) {
-        super(nombre, usuario, clave, "CLIENTE");
+    public Cliente(String cedula, String nombre, String apellido, String usuario, String clave) {
+        super(cedula, nombre, apellido, usuario, clave);
         this.mascotas = new ArrayList<>();
     }
 

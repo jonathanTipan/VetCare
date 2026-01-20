@@ -16,12 +16,13 @@
                     <nav>
                         <ul class="list-style-none nav-links flex-container align-center">
                             <li><a class="no-decoration text-light"
-                                    href="<%=request.getContextPath()%>/vista/home-admin.jsp">Home</a></li>
+                                    href="<%=request.getContextPath()%>/vista/HomeAdministrador.jsp">Home</a></li>
                             <li><a class="no-decoration text-light"
-                                    href="<%=request.getContextPath()%>/ControlUsuario?accion=listar">Gestión de
+                                    href="<%=request.getContextPath()%>/ControlVeterinario?accion=ingresarModulo">Gestión
+                                    de
                                     Veterinarios</a></li>
                             <li><a class="no-decoration text-light"
-                                    href="<%=request.getContextPath()%>/AutenticarController?accion=logout">Salir</a>
+                                    href="<%=request.getContextPath()%>/ControlAutenticacion?accion=logout">Salir</a>
                             </li>
                         </ul>
                     </nav>
@@ -29,65 +30,90 @@
             </header>
             <main class="main-content">
                 <section class="container margin-custom">
-                    <div class="flex-container justify-space-between align-center margin-custom">
-                        <h1 class="text-dark">Gestión de Veterinarios</h1>
-                        <a class="btn btn-primary" href="<%=request.getContextPath()%>/ControlUsuario?accion=formulario"
-                            style="background-color: var(--color-highlight); color: var(--color-dark);">Registrar
-                            Veterinario</a>
-                    </div>
-
                     <div class="card">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Identificación</th>
-                                    <th>Usuario</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% List<Veterinario> lista = (List<Veterinario>) request.getAttribute("veterinarios");
-                                        if(lista != null && !lista.isEmpty()) {
-                                        for(Veterinario v : lista) {
-                                        %>
-                                        <tr>
-                                            <td>
-                                                <%= v.getNombre() %>
-                                            </td>
-                                            <td>
-                                                <%= v.getIdentificacion() !=null ? v.getIdentificacion() : "N/A" %>
-                                            </td>
-                                            <td>
-                                                <%= v.getUsuario() %>
-                                            </td>
-                                            <td>
-                                                <span class="<%= " ACTIVO".equals(v.getEstado()) ? "text-highlight"
-                                                    : "text-muted" %> font-bold">
-                                                    <%= v.getEstado() %>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <a href="<%=request.getContextPath()%>/ControlUsuario?accion=formulario&id=<%=v.getId()%>"
-                                                    class="btn btn-secondary padding-vertical"
-                                                    style="background-color: #e0e0e0; color: #333;">Editar</a>
+                        <div class="flex-container justify-space-between align-center margin-custom">
+                            <h1 class="text-dark">Gestión de Veterinarios</h1>
+                            <a class="btn btn-primary"
+                                href="<%=request.getContextPath()%>/ControlVeterinario?accion=iniciarRegistro">Registrar
+                                Veterinario</a>
+                        </div>
 
-                                                <% if(!"INACTIVO".equals(v.getEstado())) { %>
-                                                    <a href="<%=request.getContextPath()%>/ControlUsuario?accion=desactivar&id=<%=v.getId()%>"
-                                                        class="btn btn-outline padding-vertical"
-                                                        onclick="return confirm('¿Desactivar este veterinario?');">Desactivar</a>
-                                                    <% } %>
-                                            </td>
-                                        </tr>
-                                        <% } } else { %>
-                                            <tr>
-                                                <td colspan="5" class="text-center">No hay veterinarios registrados.
-                                                </td>
-                                            </tr>
-                                            <% } %>
-                            </tbody>
-                        </table>
+                        <% String mensaje=(String) request.getSession().getAttribute("mensaje"); if (mensaje !=null) {
+                            %>
+                            <div class="alert alert-info">
+                                <%= mensaje %>
+                            </div>
+                            <% request.getSession().removeAttribute("mensaje"); } %>
+
+                                <% String mensajeConfirmacion=(String) request.getAttribute("mensajeConfirmacion");
+                                    String cedulaDesactivar=(String) request.getAttribute("cedulaDesactivar"); if
+                                    (mensajeConfirmacion !=null) { %>
+                                    <div class="alert alert-warning">
+                                        <p>
+                                            <%= mensajeConfirmacion %>
+                                        </p>
+                                        <div class="flex-container" style="gap: 10px; margin-top: 10px;">
+                                            <a href="<%=request.getContextPath()%>/ControlVeterinario?accion=desactivarVeterinario&cedula=<%=cedulaDesactivar%>"
+                                                class="btn btn-danger">Confirmar</a>
+                                            <a href="<%=request.getContextPath()%>/ControlVeterinario?accion=cancelar"
+                                                class="btn btn-secondary">Cancelar</a>
+                                        </div>
+                                    </div>
+                                    <% } %>
+
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Identificación</th>
+                                                    <th>Usuario</th>
+                                                    <th>Estado</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% List<Veterinario> lista = (List<Veterinario>)
+                                                        request.getAttribute("veterinarios");
+                                                        if(lista != null && !lista.isEmpty()) {
+                                                        for(Veterinario v : lista) {
+                                                        %>
+                                                        <tr>
+                                                            <td>
+                                                                <%= v.getNombre() %>
+                                                            </td>
+                                                            <td>
+                                                                <%= v.getCedula() !=null ? v.getCedula() : "N/A" %>
+                                                            </td>
+                                                            <td>
+                                                                <%= v.getUsuario() %>
+                                                            </td>
+                                                            <td>
+                                                                <span class="<%= " ACTIVO".equals(v.getEstado())
+                                                                    ? "text-highlight" : "text-muted" %> font-bold">
+                                                                    <%= v.getEstado() %>
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <div class="flex-container">
+                                                                    <a href="<%=request.getContextPath()%>/ControlVeterinario?accion=iniciarEdicion&cedula=<%=v.getCedula()%>"
+                                                                        class="btn btn-sm btn-outline">Editar</a>
+
+                                                                    <% if(!"INACTIVO".equals(v.getEstado())) { %>
+                                                                        <a href="<%=request.getContextPath()%>/ControlVeterinario?accion=iniciarDesactivacion&cedula=<%=v.getCedula()%>"
+                                                                            class="btn btn-sm btn-danger">Desactivar</a>
+                                                                        <% } %>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <% } } else { %>
+                                                            <tr>
+                                                                <td colspan="5" class="text-center">No hay veterinarios
+                                                                    registrados.
+                                                                </td>
+                                                            </tr>
+                                                            <% } %>
+                                            </tbody>
+                                        </table>
                     </div>
                 </section>
             </main>

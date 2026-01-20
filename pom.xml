@@ -17,6 +17,25 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>3.2.3</version>
       </plugin>
+      <plugin>
+          <groupId>org.codehaus.cargo</groupId>
+          <artifactId>cargo-maven3-plugin</artifactId>
+          <version>1.10.13</version>
+          <configuration>
+              <container>
+                  <containerId>tomcat10x</containerId>
+                  <type>installed</type>
+                  <zipUrlInstaller>
+                      <url>https://repo.maven.apache.org/maven2/org/apache/tomcat/tomcat/10.1.18/tomcat-10.1.18.zip</url>
+                  </zipUrlInstaller>
+              </container>
+              <configuration>
+                  <properties>
+                      <cargo.servlet.port>8081</cargo.servlet.port>
+                  </properties>
+              </configuration>
+          </configuration>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
@@ -53,11 +72,33 @@
  	    <version>3.0.0</version>
  	</dependency>
  	
- 	<dependency>
+	<dependency>
  	    <groupId>jakarta.el</groupId>
  	    <artifactId>jakarta.el-api</artifactId>
  	    <version>6.0.0</version>
  	</dependency>
+
+	<!-- JAX-RS / Jersey Dependencies -->
+	<dependency>
+		<groupId>org.glassfish.jersey.containers</groupId>
+		<artifactId>jersey-container-servlet</artifactId>
+		<version>3.1.2</version>
+	</dependency>
+	<dependency>
+		<groupId>org.glassfish.jersey.media</groupId>
+		<artifactId>jersey-media-json-jackson</artifactId>
+		<version>3.1.2</version>
+	</dependency>
+	<dependency>
+		<groupId>org.glassfish.jersey.inject</groupId>
+		<artifactId>jersey-hk2</artifactId>
+		<version>3.1.2</version>
+	</dependency>
+	<dependency>
+		<groupId>jakarta.ws.rs</groupId>
+		<artifactId>jakarta.ws.rs-api</artifactId>
+		<version>3.1.0</version>
+	</dependency>
 
   </dependencies>
 </project>

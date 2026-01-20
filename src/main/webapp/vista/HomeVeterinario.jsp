@@ -15,12 +15,13 @@
                 <nav>
                     <ul class="list-style-none nav-links flex-container align-center">
                         <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/vista/home-veterinario.jsp">Home</a></li>
+                                href="<%=request.getContextPath()%>/vista/HomeVeterinario.jsp">Home</a></li>
                         <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/ControlAgendamiento?accion=agenda">Mi Agenda</a>
+                                href="<%=request.getContextPath()%>/ControlConsulta?accion=ingresarModulo">Mis
+                                Consultas</a>
                         </li>
                         <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/AutenticarController?accion=logout">Salir</a></li>
+                                href="<%=request.getContextPath()%>/ControlAutenticacion?accion=logout">Salir</a></li>
                     </ul>
                 </nav>
             </div>
@@ -30,10 +31,11 @@
                 <h1 class="text-dark">Panel Veterinario - ${usuario.nombre}</h1>
                 <div class="flex-container flex-wrap">
                     <div class="card card-light">
-                        <h2>Citas Pendientes</h2>
-                        <p>Revisa las citas agendadas para hoy.</p>
+                        <h2>Consultas Pendientes</h2>
+                        <p>Revisa las consultas agendadas para hoy.</p>
                         <a class="btn btn-primary"
-                            href="<%=request.getContextPath()%>/ControlAgendamiento?accion=agenda">Ver Agenda</a>
+                            href="<%=request.getContextPath()%>/ControlConsulta?accion=ingresarModulo">Ver
+                            Consultas</a>
                     </div>
 
                 </div>

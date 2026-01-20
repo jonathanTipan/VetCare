@@ -5,54 +5,47 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "usuarios")
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id; // Unified ID
+    @Column(length = 20)
+    // Primary Key (Cedula)
+    private String cedula;
 
     @Column(nullable = false)
-    private String nombre;
-
-    @Column(unique = true, nullable = false)
-    private String usuario; // Username/Email
+    private String usuario;
 
     @Column(nullable = false)
     private String clave;
 
-    @Column(nullable = false)
-    private String rol; // "CLIENTE", "VETERINARIO", "ADMIN"
-
     @Column(length = 20)
-    private String estado = "ACTIVO"; // "ACTIVO", "INACTIVO"
+    private String estado = "ACTIVO";
 
-    // Default Constructor
+    @Column(nullable = false)
+    private String nombre;
+
+    @Column(nullable = false)
+    private String apellido;
+
     public Usuario() {
     }
 
-    public Usuario(String nombre, String usuario, String clave, String rol) {
+    public Usuario(String cedula, String nombre, String apellido, String usuario, String clave) {
+        this.cedula = cedula;
         this.nombre = nombre;
+        this.apellido = apellido;
         this.usuario = usuario;
         this.clave = clave;
-        this.rol = rol;
     }
 
-    public int getId() {
-        return id;
+    public String getCedula() {
+        return cedula;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
     }
 
     public String getUsuario() {
@@ -71,14 +64,6 @@ public class Usuario implements Serializable {
         this.clave = clave;
     }
 
-    public String getRol() {
-        return rol;
-    }
-
-    public void setRol(String rol) {
-        this.rol = rol;
-    }
-
     public String getEstado() {
         return estado;
     }
@@ -87,8 +72,28 @@ public class Usuario implements Serializable {
         this.estado = estado;
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getRol() {
+        return this.getClass().getSimpleName();
+    }
+
     @Override
     public String toString() {
-        return "Usuario [id=" + id + ", nombre=" + nombre + ", rol=" + rol + "]";
+        return "Usuario [cedula=" + cedula + ", nombre=" + nombre + ", apellido=" + apellido + "]";
     }
 }

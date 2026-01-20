@@ -1,8 +1,9 @@
 package controlador;
 
 import java.io.IOException;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+
+import dao.DAOFactory;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,116 +13,192 @@ import jakarta.servlet.http.HttpSession;
 import modelo.Cliente;
 import modelo.Mascota;
 import modelo.Usuario;
-import dao.MascotaDAO;
 
 @WebServlet("/ControlMascota")
 public class ControlMascota extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private MascotaDAO mascotaDAO;
 
     public ControlMascota() {
         super();
-        this.mascotaDAO = new MascotaDAO();
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void ruteador(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
         Usuario u = (session != null) ? (Usuario) session.getAttribute("usuario") : null;
 
-        if (u == null || !"CLIENTE".equals(u.getRol())) {
-            resp.sendRedirect("login.jsp");
+        if (u == null || !(u instanceof Cliente)) {
+            resp.sendRedirect(req.getContextPath() + "/Login.jsp");
             return;
         }
 
-        // We assume Usuario is instance of Cliente because of JOINED inheritance and
-        // logic
-        // But session might hold just the parent object depending on how Hibernate
-        // loaded it.
-        // Safer to treat logic: if we have ID, we can set it.
-        // Wait, if Hibernate loaded it, it SHOULD be the subclass instance (Cliente).
+        String accion = req.getParameter("accion") != null ? req.getParameter("accion") : "ingresarModulo";
+        String cedulaCliente = u.getCedula();
 
-        String accion = req.getParameter("accion");
-        if ("eliminar".equals(accion)) {
-            eliminar(req, resp);
-            return;
+        switch (accion) {
+            case "ingresarModulo":
+                ingresarModulo(req, resp, cedulaCliente);
+                break;
+            case "iniciarRegistro":
+                iniciarRegistro(req, resp);
+                break;
+            case "registrarMascota":
+                registrarMascota(req, resp, (Cliente) u);
+                break;
+            case "iniciarEdicion":
+                iniciarEdicion(req, resp, cedulaCliente);
+                break;
+            case "editarMascota":
+                editarMascota(req, resp, cedulaCliente);
+                break;
+            case "eliminarMascota":
+                eliminarMascota(req, resp, cedulaCliente);
+                break;
+            case "cancelar":
+                cancelar(req, resp);
+                break;
+            default:
+                ingresarModulo(req, resp, cedulaCliente);
+                break;
         }
-
-        String nombre = req.getParameter("nombre");
-        String especie = req.getParameter("especie");
-        String raza = req.getParameter("raza");
-
-        Date fechaNac = new Date();
-        try {
-            String f = req.getParameter("fechaNac");
-            if (f != null && !f.isEmpty()) {
-                fechaNac = new SimpleDateFormat("yyyy-MM-dd").parse(f);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        double peso = 0.0;
-        try {
-            peso = Double.parseDouble(req.getParameter("peso"));
-        } catch (NumberFormatException e) {
-        }
-
-        Mascota m = new Mascota(nombre, especie, raza, fechaNac, peso);
-
-        // Link to Cliente
-        // If 'u' is actually a proxy or just Usuario, we might need to fetch the
-        // Cliente proxy.
-        // For now, let's assume 'u' is accessible as Cliente or we create a dummy with
-        // ID.
-        // To be safe with JPA, we should find the reference or use the object if it's
-        // managed.
-        // Since 'u' is detached (from session), we can use it if we merge or just set
-        // ID if we had FK field.
-        // But we have object reference.
-
-        if (u instanceof Cliente) {
-            m.setCliente((Cliente) u);
-        } else {
-            // Fallback: This shouldn't happen if login loaded correctly,
-            // but if it did, we might need to 'load' the client by ID.
-            // For this example, let's assume casting works or fail.
-            // Actually, creating a new Cliente with just ID might work for setting FK.
-            Cliente c = new Cliente();
-            c.setId(u.getId());
-            m.setCliente(c);
-        }
-
-        boolean exito = mascotaDAO.guardar(m);
-
-        if (exito) {
-            req.setAttribute("mensaje", "Mascota guardada");
-        } else {
-            req.setAttribute("mensaje", "Error al guardar");
-        }
-
-        // Refresh list before forwarding
-        if (u != null) {
-            req.setAttribute("mascotas", mascotaDAO.buscarPorCliente(u.getId()));
-        }
-
-        req.getRequestDispatcher("vista/misMascotas.jsp").forward(req, resp);
-    }
-
-    private void eliminar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int id = Integer.parseInt(req.getParameter("id"));
-        mascotaDAO.eliminar(id);
-        resp.sendRedirect("ControlMascota?accion=listar");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // List pets logic usually goes here
-        HttpSession session = req.getSession(false);
-        Usuario u = (session != null) ? (Usuario) session.getAttribute("usuario") : null;
-        if (u != null) {
-            req.setAttribute("mascotas", mascotaDAO.buscarPorCliente(u.getId()));
+        this.ruteador(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        this.ruteador(req, resp);
+    }
+
+    private void ingresarModulo(HttpServletRequest req, HttpServletResponse resp, String cedulaCliente)
+            throws ServletException, IOException {
+        req.setAttribute("mascotas", DAOFactory.getFactory().getMascotaDAO().listarMascotas(cedulaCliente));
+        req.getRequestDispatcher("vista/GestionMascotas.jsp").forward(req, resp);
+    }
+
+    private void iniciarRegistro(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        req.getRequestDispatcher("vista/RegistroMascota.jsp").forward(req, resp);
+    }
+
+    private void registrarMascota(HttpServletRequest req, HttpServletResponse resp, Cliente cliente)
+            throws ServletException, IOException {
+        try {
+            String fechaStr = req.getParameter("fechaNacimiento");
+            String pesoStr = req.getParameter("peso");
+
+            Mascota mascota = new Mascota();
+            mascota.setCliente(cliente);
+            mascota.setNombre(req.getParameter("nombre"));
+            mascota.setEspecie(req.getParameter("especie"));
+            mascota.setRaza(req.getParameter("raza"));
+            mascota.setSexo(req.getParameter("sexo"));
+
+            if (mascota.getNombre() == null || mascota.getNombre().trim().isEmpty() ||
+                    mascota.getEspecie() == null || mascota.getEspecie().trim().isEmpty()) {
+                throw new Exception("Nombre y especie son obligatorios");
+            }
+
+            if (fechaStr != null && !fechaStr.isEmpty())
+                mascota.setFechaNacimiento(new SimpleDateFormat("yyyy-MM-dd").parse(fechaStr));
+
+            if (pesoStr != null && !pesoStr.isEmpty())
+                mascota.setPeso(Double.parseDouble(pesoStr));
+
+            try {
+                DAOFactory.getFactory().getMascotaDAO().create(mascota);
+                req.getSession().setAttribute("mensaje", "Mascota registrada exitosamente");
+                resp.sendRedirect("ControlMascota?accion=ingresarModulo");
+            } catch (Exception e) {
+                req.setAttribute("mensaje", "No se pudo guardar la mascota en la base de datos");
+                req.getRequestDispatcher("vista/RegistroMascota.jsp").forward(req, resp);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            req.setAttribute("mensaje", "Error al registrar la mascota: " + e.getMessage());
+            req.getRequestDispatcher("vista/RegistroMascota.jsp").forward(req, resp);
         }
-        req.getRequestDispatcher("vista/misMascotas.jsp").forward(req, resp);
+    }
+
+    private void iniciarEdicion(HttpServletRequest req, HttpServletResponse resp, String cedulaCliente)
+            throws ServletException, IOException {
+        String idStr = req.getParameter("id");
+        if (idStr != null && !idStr.isEmpty()) {
+            Mascota mascota = DAOFactory.getFactory().getMascotaDAO().getById(Integer.parseInt(idStr));
+            if (mascota != null && mascota.getCliente().getCedula().equals(cedulaCliente)) {
+                req.setAttribute("mascota", mascota);
+                req.getRequestDispatcher("vista/EdicionMascota.jsp").forward(req, resp);
+                return;
+            } else {
+                req.setAttribute("mensaje", "No tiene permiso para editar esta mascota");
+            }
+        }
+        resp.sendRedirect("ControlMascota?accion=ingresarModulo");
+    }
+
+    private void editarMascota(HttpServletRequest req, HttpServletResponse resp, String cedulaCliente)
+            throws ServletException, IOException {
+        String idStr = req.getParameter("id");
+        if (idStr != null && !idStr.isEmpty()) {
+            Mascota mascota = DAOFactory.getFactory().getMascotaDAO().getById(Integer.parseInt(idStr));
+
+            if (mascota != null && mascota.getCliente().getCedula().equals(cedulaCliente)) {
+                try {
+                    String nombre = req.getParameter("nombre");
+                    String especie = req.getParameter("especie");
+                    String fechaStr = req.getParameter("fechaNacimiento");
+                    String pesoStr = req.getParameter("peso");
+
+                    if (nombre != null && !nombre.trim().isEmpty())
+                        mascota.setNombre(nombre.trim());
+                    if (especie != null && !especie.trim().isEmpty())
+                        mascota.setEspecie(especie.trim());
+                    mascota.setRaza(req.getParameter("raza"));
+                    mascota.setSexo(req.getParameter("sexo"));
+
+                    if (fechaStr != null && !fechaStr.isEmpty())
+                        mascota.setFechaNacimiento(new SimpleDateFormat("yyyy-MM-dd").parse(fechaStr));
+
+                    if (pesoStr != null && !pesoStr.isEmpty())
+                        mascota.setPeso(Double.parseDouble(pesoStr));
+
+                    DAOFactory.getFactory().getMascotaDAO().update(mascota);
+                    req.getSession().setAttribute("mensaje", "Mascota actualizada exitosamente");
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    req.getSession().setAttribute("mensaje", "Error al actualizar la mascota");
+                }
+            } else {
+                req.getSession().setAttribute("mensaje", "No tiene permiso para editar esta mascota");
+            }
+        }
+        resp.sendRedirect("ControlMascota?accion=ingresarModulo");
+    }
+
+    private void eliminarMascota(HttpServletRequest req, HttpServletResponse resp, String cedulaCliente)
+            throws ServletException, IOException {
+        String idStr = req.getParameter("id");
+        if (idStr != null && !idStr.isEmpty()) {
+            Mascota mascota = DAOFactory.getFactory().getMascotaDAO().getById(Integer.parseInt(idStr));
+            if (mascota != null && mascota.getCliente().getCedula().equals(cedulaCliente)) {
+                try {
+                    DAOFactory.getFactory().getMascotaDAO().deleteByID(mascota.getId());
+                    req.getSession().setAttribute("mensaje", "Mascota eliminada exitosamente");
+                } catch (Exception e) {
+                    req.getSession().setAttribute("mensaje", "Error al eliminar mascota");
+                }
+            } else {
+                req.getSession().setAttribute("mensaje", "No tiene permiso para eliminar esta mascota");
+            }
+        }
+        resp.sendRedirect("ControlMascota?accion=ingresarModulo");
+    }
+
+    private void cancelar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.sendRedirect("ControlMascota?accion=ingresarModulo");
     }
 }

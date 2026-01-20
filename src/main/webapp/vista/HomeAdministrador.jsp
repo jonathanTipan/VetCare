@@ -14,11 +14,13 @@
                 <div class="navbar-brand">Vet<span class="text-highlight">Care</span> | Admin</div>
                 <nav>
                     <ul class="list-style-none nav-links flex-container align-center">
-                        <li><a class="no-decoration text-light" href="home-admin.jsp">Home</a></li>
                         <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/ControlUsuario?accion=listar">Usuarios</a></li>
+                                href="<%=request.getContextPath()%>/vista/HomeAdministrador.jsp">Home</a></li>
                         <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/AutenticarController?accion=logout">Salir</a></li>
+                                href="<%=request.getContextPath()%>/ControlVeterinario?accion=ingresarModulo">Usuarios</a>
+                        </li>
+                        <li><a class="no-decoration text-light"
+                                href="<%=request.getContextPath()%>/ControlAutenticacion?accion=logout">Salir</a></li>
                     </ul>
                 </nav>
             </div>
@@ -30,8 +32,8 @@
                     <div class="card card-light">
                         <h2>Gestión de Usuarios</h2>
                         <p>Administra clientes y veterinarios.</p>
-                        <a class="btn btn-primary"
-                            href="<%=request.getContextPath()%>/ControlUsuario?accion=listar">Gestionar</a>
+                        <a class="btn btn-primary" style="margin-left: 0;"
+                            href="<%=request.getContextPath()%>/ControlVeterinario?accion=ingresarModulo">Gestionar</a>
                     </div>
                 </div>
             </section>

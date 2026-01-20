@@ -4,6 +4,7 @@
 
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Home Cliente</title>
         <link rel="stylesheet" href="<%=request.getContextPath()%>/css/framework.css">
     </head>
@@ -16,12 +17,13 @@
                     <ul class="list-style-none nav-links flex-container align-center">
                         <li><a class="no-decoration text-light" href="home-cliente.jsp">Home</a></li>
                         <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/ControlMascota?accion=listar">Mis Mascotas</a></li>
+                                href="<%=request.getContextPath()%>/ControlMascota?accion=ingresarModulo">Mis
+                                Mascotas</a></li>
                         <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/ControlAgendamiento?accion=listar">Mis Citas</a>
+                                href="<%=request.getContextPath()%>/ControlCita?accion=ingresarModulo">Mis Citas</a>
                         </li>
                         <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/AutenticarController?accion=logout">Salir</a></li>
+                                href="<%=request.getContextPath()%>/ControlAutenticacion?accion=logout">Salir</a></li>
                     </ul>
                 </nav>
             </div>
@@ -33,14 +35,15 @@
                     <div class="card card-light">
                         <h2>Mis Mascotas</h2>
                         <p>Gestiona la información de tus mascotas.</p>
-                        <a class="btn btn-primary" href="<%=request.getContextPath()%>/ControlMascota?accion=listar">Ver
+                        <a class="btn btn-primary" style="margin-left: 0;"
+                            href="<%=request.getContextPath()%>/ControlMascota?accion=ingresarModulo">Ver
                             Mascotas</a>
                     </div>
                     <div class="card card-light">
-                        <h2>Agendar Cita</h2>
-                        <p>Programa una nueva cita con el veterinario.</p>
-                        <a class="btn btn-primary"
-                            href="<%=request.getContextPath()%>/vista/agendarCita.jsp">Agendar</a>
+                        <h2>Agendar Consulta</h2>
+                        <p>Programa una nueva consulta con el veterinario.</p>
+                        <a class="btn btn-primary" style="margin-left: 0;"
+                            href="<%=request.getContextPath()%>/ControlConsulta?accion=iniciarAgendamiento">Agendar</a>
                     </div>
                 </div>
             </section>

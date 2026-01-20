@@ -1,43 +1,52 @@
 package prueba;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import soporte.JPAUtil;
+import modelo.Administrador;
+import modelo.Cliente;
 import modelo.Usuario;
+import modelo.Veterinario;
 
 public class TestJPA {
+
     public static void main(String[] args) {
-        System.out.println("Iniciando prueba de conexión JPA...");
-        EntityManager em = JPAUtil.getEntityManager();
+        System.out.println("========================================");
+        System.out.println("PRUEBA DE CONEXIÓN JPA Y DATOS INICIALES");
+        System.out.println("========================================");
+
+        EntityManager em = null;
+        EntityTransaction tx = null;
 
         try {
-            System.out.println("EntityManager obtenido: " + em.isOpen());
+            // 1. Obtener la conexión
+            System.out.println("Intentando conectar con la base de datos...");
+            em = JPAUtil.getEntityManager();
+            System.out.println("✓ Conexión establecida (EntityManager open: " + em.isOpen() + ")");
 
-            // Intenta una operación simple para forzar la generación de tablas
-            em.getTransaction().begin();
-            System.out.println("Transacción iniciada. Hibernate debería crear las tablas ahora si hbm2ddl=update.");
+            tx = em.getTransaction();
+            tx.begin();
 
-            // Verificar si hay usuarios
-            long count = em.createQuery("SELECT COUNT(u) FROM Usuario u", Long.class).getSingleResult();
-            System.out.println("Número de usuarios existentes: " + count);
+        
 
-            if (count == 0) {
-                System.out.println("Creando usuario ADMIN de prueba...");
-                Usuario admin = new Usuario("Administrador", "admin", "admin", "ADMIN");
-                em.persist(admin);
-                System.out.println("Usuario ADMIN creado.");
-            }
-
-            em.getTransaction().commit();
-            System.out.println("Prueba finalizada con ÉXITO.");
+            tx.commit();
+            System.out.println("\n✓ Transacción finalizada exitosamente.");
+            System.out.println("\n========================================");
+            System.out.println("PRUEBA EXITOSA");
+            System.out.println("========================================");
 
         } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
+            System.out.println("\n❌ ERROR EN LA PRUEBA:");
             e.printStackTrace();
-            System.out.println("Prueba FALLÓ.");
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+                System.out.println("Transacción revertida.");
+            }
         } finally {
-            em.close();
+            if (em != null) {
+                em.close();
+            }
+            // Cerrar la factory para terminar el programa
             JPAUtil.shutdown();
         }
     }

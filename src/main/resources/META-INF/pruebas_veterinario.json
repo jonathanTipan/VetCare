@@ -1,0 +1,52 @@
+{
+  "descripcion": "Ejemplos de JSON para probar el servicio REST de Veterinarios",
+  "url_base": "http://localhost:8080/VetCare/rest/veterinarios",
+  "endpoints": { 
+    "POST_agregar": {
+      "metodo": "POST",
+      "url": "http://localhost:8080/VetCare/rest/veterinarios/add",
+      "descripcion": "Crear un nuevo veterinario",
+      "body": {
+        "cedula": "1799999999",
+        "nombre": "Prueba",
+        "apellido": "Test",
+        "usuario": "vet_test",
+        "clave": "12345",
+        "especialidad": "Cardiologia",
+        "numeroLicencia": "TEST-001",
+        "telefono": "0999888777"
+      }
+    },
+    "PUT_actualizar": {
+      "metodo": "PUT",
+      "url": "http://localhost:8080/VetCare/rest/veterinarios/update",
+      "descripcion": "Actualizar un veterinario existente",
+      "body": {
+        "cedula": "1799999999",
+        "nombre": "Prueba Editada",
+        "apellido": "Test Editado",
+        "usuario": "vet_test",
+        "clave": "12345",
+        "especialidad": "Cardiologia Veterinaria",
+        "numeroLicencia": "TEST-001",
+        "telefono": "0999888777",
+        "estado": "ACTIVO"
+      }
+    },
+    "GET_listar": {
+      "metodo": "GET",
+      "url": "http://localhost:8080/VetCare/rest/veterinarios",
+      "descripcion": "Listar todos los veterinarios"
+    },
+    "GET_por_id": {
+      "metodo": "GET",
+      "url": "http://localhost:8080/VetCare/rest/veterinarios/1799999999",
+      "descripcion": "Obtener veterinario por cedula"
+    },
+    "DELETE_eliminar": {
+      "metodo": "DELETE",
+      "url": "http://localhost:8080/VetCare/rest/veterinarios/delete/1799999999",
+      "descripcion": "Eliminar veterinario por cedula"
+    }
+  }
+}

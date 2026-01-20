@@ -2,6 +2,7 @@ package modelo;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name = "recetas")
@@ -12,15 +13,22 @@ public class Receta implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private String dosis;
+
     @Column(nullable = false)
     private String medicamento;
 
-    private String dosis;
     private String frecuencia;
+
+    @Temporal(TemporalType.DATE)
+    private Date fecha;
+
+    private String estado;
+
     private String duracion;
 
     @ManyToOne
-    @JoinColumn(name = "idConsulta")
+    @JoinColumn(name = "consulta_id")
     private Consulta consulta;
 
     public Receta() {
@@ -34,14 +42,6 @@ public class Receta implements Serializable {
         this.id = id;
     }
 
-    public String getMedicamento() {
-        return medicamento;
-    }
-
-    public void setMedicamento(String medicamento) {
-        this.medicamento = medicamento;
-    }
-
     public String getDosis() {
         return dosis;
     }
@@ -50,12 +50,36 @@ public class Receta implements Serializable {
         this.dosis = dosis;
     }
 
+    public String getMedicamento() {
+        return medicamento;
+    }
+
+    public void setMedicamento(String medicamento) {
+        this.medicamento = medicamento;
+    }
+
     public String getFrecuencia() {
         return frecuencia;
     }
 
     public void setFrecuencia(String frecuencia) {
         this.frecuencia = frecuencia;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     public String getDuracion() {
