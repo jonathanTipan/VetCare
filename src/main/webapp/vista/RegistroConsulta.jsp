@@ -17,9 +17,7 @@
                     <ul class="list-style-none nav-links flex-container align-center">
                         <li><a class="no-decoration text-light"
                                 href="<%=request.getContextPath()%>/vista/HomeVeterinario.jsp">Home</a></li>
-                        <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/ControlConsulta?accion=ingresarModulo">Mi Agenda</a>
-                        </li>
+
                         <li><a class="no-decoration text-light"
                                 href="<%=request.getContextPath()%>/ControlAutenticacion?accion=logout">Salir</a></li>
                     </ul>
@@ -55,39 +53,105 @@
                                 </div>
 
                                 <form action="<%=request.getContextPath()%>/ControlConsulta" method="post">
-                                    <input type="hidden" name="accion" value="registrarAtencion">
+
                                     <input type="hidden" name="idConsulta" value="<%= consulta.getId() %>">
 
                                     <div class="form-group"><label class="form-label">Síntomas</label>
-                                        <textarea class="form-control" rows="3" name="sintomas"
-                                            required><%= consulta.getSintomas() != null ? consulta.getSintomas() : "" %></textarea>
+                                        <textarea class="form-control" rows="3" name="sintomas" required
+                                            oninvalid="this.setCustomValidity('Por favor, complete este campo')"
+                                            oninput="this.setCustomValidity('')"><%= consulta.getSintomas() != null ? consulta.getSintomas() : "" %></textarea>
                                     </div>
                                     <div class="form-group"><label class="form-label">Diagnóstico</label>
-                                        <textarea class="form-control" rows="3" name="diagnostico"
-                                            required><%= consulta.getDiagnostico() != null ? consulta.getDiagnostico() : "" %></textarea>
+                                        <textarea class="form-control" rows="3" name="diagnostico" required
+                                            oninvalid="this.setCustomValidity('Por favor, complete este campo')"
+                                            oninput="this.setCustomValidity('')"><%= consulta.getDiagnostico() != null ? consulta.getDiagnostico() : "" %></textarea>
                                     </div>
                                     <div class="form-group"><label class="form-label">Tratamiento</label>
-                                        <textarea class="form-control" rows="3" name="tratamiento"
-                                            required><%= consulta.getTratamiento() != null ? consulta.getTratamiento() : "" %></textarea>
+                                        <textarea class="form-control" rows="3" name="tratamiento" required
+                                            oninvalid="this.setCustomValidity('Por favor, complete este campo')"
+                                            oninput="this.setCustomValidity('')"><%= consulta.getTratamiento() != null ? consulta.getTratamiento() : "" %></textarea>
                                     </div>
                                     <div class="form-group"><label class="form-label">Observaciones</label>
-                                        <textarea class="form-control" rows="3"
-                                            name="observaciones"><%= consulta.getObservaciones() != null ? consulta.getObservaciones() : "" %></textarea>
+                                        <textarea class="form-control" rows="3" name="observaciones" required
+                                            oninvalid="this.setCustomValidity('Por favor, complete este campo')"
+                                            oninput="this.setCustomValidity('')"><%= consulta.getObservaciones() != null ? consulta.getObservaciones() : "" %></textarea>
                                     </div>
 
                                     <div class="form-group flex-container justify-space-between">
-                                        <button class="btn btn-primary" type="submit">Finalizar Atención</button>
-                                        <a class="btn btn-secondary"
-                                            href="<%=request.getContextPath()%>/ControlConsulta?accion=ingresarModulo">Cancelar</a>
+                                        <div>
+                                            <button class="btn btn-primary" type="submit" name="accion"
+                                                value="atenderConsulta">Finalizar Atención</button>
+                                            <a class="btn btn-secondary"
+                                                href="<%=request.getContextPath()%>/ControlConsulta?accion=ingresarModulo">Cancelar</a>
+                                        </div>
+                                        <button type="submit" name="accion" value="iniciarPrescripcion"
+                                            class="btn btn-warning" id="btnReceta"
+                                            style="background-color: #ff9800; color: white; opacity: 0.5; cursor: not-allowed; pointer-events: none;"
+                                            formnovalidate>
+                                            Prescribir Receta
+                                        </button>
                                     </div>
                                 </form>
                                 <% } %>
                 </div>
             </section>
         </main>
+
+
+
         <footer class="footer">
             <p>VetCare - Registrar Consulta</p>
         </footer>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const btnReceta = document.getElementById("btnReceta");
+
+                // Fields to validate
+                const sintomas = document.querySelector('textarea[name="sintomas"]');
+                const diagnostico = document.querySelector('textarea[name="diagnostico"]');
+                const tratamiento = document.querySelector('textarea[name="tratamiento"]');
+                const observaciones = document.querySelector('textarea[name="observaciones"]');
+
+                function validarFormularioAtencion() {
+                    const isValid = sintomas.value.trim() !== "" &&
+                        diagnostico.value.trim() !== "" &&
+                        tratamiento.value.trim() !== "" &&
+                        observaciones.value.trim() !== "";
+
+                    if (isValid) {
+                        btnReceta.style.pointerEvents = "auto";
+                        btnReceta.style.opacity = "1";
+                        btnReceta.style.cursor = "pointer";
+                        btnReceta.classList.remove("disabled"); // Optional if using framework util
+                    } else {
+                        btnReceta.style.pointerEvents = "none";
+                        btnReceta.style.opacity = "0.5";
+                        btnReceta.style.cursor = "not-allowed";
+                    }
+                }
+
+                // Add event listeners
+                if (sintomas) sintomas.addEventListener("input", validarFormularioAtencion);
+                if (diagnostico) diagnostico.addEventListener("input", validarFormularioAtencion);
+                if (tratamiento) tratamiento.addEventListener("input", validarFormularioAtencion);
+                if (observaciones) observaciones.addEventListener("input", validarFormularioAtencion);
+
+                // Initial check
+                validarFormularioAtencion();
+
+
+                const modal = document.getElementById("modalReceta");
+                const btnOpen = document.getElementById("btnReceta");
+                const btnClose = document.getElementById("btnCancelarReceta");
+                const form = document.getElementById("formReceta");
+
+                // Open Modal logic... (Keeping existing logic if modal exists, though it seems unused in this file version)
+                // Since the modal is not in this file, we remove the unused modal code to avoid errors or confusion, 
+                // but if the user intends to link to another page (as per the href attribute), we don't need modal logic here.
+                // The button is an anchor tag <a> linking to "iniciarPrescripcion".
+            });
+        </script>
     </body>
 
     </html>

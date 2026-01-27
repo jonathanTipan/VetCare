@@ -13,15 +13,14 @@ public class JPAMascotaDAO extends JPAGenericDAO<Mascota, Integer> implements Ma
     }
 
     @Override
-    public List<Mascota> listarMascotas(String cedulaCliente) {
+    public List<Mascota> obtenerPorCliente(String cedula) {
         try {
-            return em.createQuery("SELECT m FROM Mascota m WHERE m.cliente.cedula = :cedulaCliente", Mascota.class)
-                    .setParameter("cedulaCliente", cedulaCliente)
+            return em.createQuery("SELECT m FROM Mascota m WHERE m.cliente.cedula = :cedula", Mascota.class)
+                    .setParameter("cedula", cedula)
                     .getResultList();
         } catch (Exception e) {
             e.printStackTrace();
             return Collections.emptyList();
         }
     }
-
 }

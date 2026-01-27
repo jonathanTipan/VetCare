@@ -80,21 +80,21 @@ VALUES ('1900000001', 1, '2025-12-01', '09:00:00', 'Revision post-operatoria', '
 
 -- 4. RECETAS
 -- Recetas para Consulta 1
-INSERT INTO recetas (consulta_id, medicamento, dosis, frecuencia, duracion, fecha, estado)
-VALUES (1, 'Analgesico', '10mg', 'Cada 12 horas', '3 dias', '2023-11-01', 'ACTIVA');
-INSERT INTO recetas (consulta_id, medicamento, dosis, frecuencia, duracion, fecha, estado)
-VALUES (1, 'Antibiotico', '1 tab', 'Cada 24 horas', '5 dias', '2023-11-01', 'ACTIVA');
+INSERT INTO recetas (consulta_id, medicamento, dosis, frecuencia, duracion)
+VALUES (1, 'Analgesico', '10mg', 'Cada 12 horas', '3 dias');
+INSERT INTO recetas (consulta_id, medicamento, dosis, frecuencia, duracion)
+VALUES (1, 'Antibiotico', '1 tab', 'Cada 24 horas', '5 dias');
 
 -- Recetas para Consulta 2
-INSERT INTO recetas (consulta_id, medicamento, dosis, frecuencia, duracion, fecha, estado)
-VALUES (2, 'Antiinflamatorio', '20mg', 'Cada 24 horas', '5 dias', '2023-11-01', 'ACTIVA');
+INSERT INTO recetas (consulta_id, medicamento, dosis, frecuencia, duracion)
+VALUES (2, 'Antiinflamatorio', '20mg', 'Cada 24 horas', '5 dias');
 
 -- Recetas para Consulta 5
-INSERT INTO recetas (consulta_id, medicamento, dosis, frecuencia, duracion, fecha, estado)
-VALUES (5, 'Corticoides Orales', '5mg', 'Cada 12 horas', '7 dias', '2023-11-03', 'ACTIVA');
-INSERT INTO recetas (consulta_id, medicamento, dosis, frecuencia, duracion, fecha, estado)
-VALUES (5, 'Shampoo Hipoalergenico', 'N/A', 'Cada 3 dias', '2 semanas', '2023-11-03', 'ACTIVA');
+INSERT INTO recetas (consulta_id, medicamento, dosis, frecuencia, duracion)
+VALUES (5, 'Corticoides Orales', '5mg', 'Cada 12 horas', '7 dias');
+INSERT INTO recetas (consulta_id, medicamento, dosis, frecuencia, duracion)
+VALUES (5, 'Shampoo Hipoalergenico', 'N/A', 'Cada 3 dias', '2 semanas');
 
 -- Recetas para Consulta 6
-INSERT INTO recetas (consulta_id, medicamento, dosis, frecuencia, duracion, fecha, estado)
-VALUES (6, 'Crema Ketoconazol', 'Capa fina', 'Cada 12 horas', '10 dias', '2023-11-03', 'ACTIVA');
+INSERT INTO recetas (consulta_id, medicamento, dosis, frecuencia, duracion)
+VALUES (6, 'Crema Ketoconazol', 'Capa fina', 'Cada 12 horas', '10 dias');

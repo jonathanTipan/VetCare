@@ -6,6 +6,6 @@ import modelo.Mascota;
 
 public interface MascotaDAO extends GenericDAO<Mascota, Integer> {
 
-    public List<Mascota> listarMascotas(String cedulaCliente);
+    public List<Mascota> obtenerPorCliente(String cedula);
 
 }

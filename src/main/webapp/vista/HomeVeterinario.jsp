@@ -16,10 +16,7 @@
                     <ul class="list-style-none nav-links flex-container align-center">
                         <li><a class="no-decoration text-light"
                                 href="<%=request.getContextPath()%>/vista/HomeVeterinario.jsp">Home</a></li>
-                        <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/ControlConsulta?accion=ingresarModulo">Mis
-                                Consultas</a>
-                        </li>
+
                         <li><a class="no-decoration text-light"
                                 href="<%=request.getContextPath()%>/ControlAutenticacion?accion=logout">Salir</a></li>
                     </ul>

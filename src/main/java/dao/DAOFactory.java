@@ -1,10 +1,10 @@
 package dao;
 
-import dao.jpa.JPADAOFactory;
+import dao.jpa.JPAFactoryDAO;
 
 public abstract class DAOFactory {
     // Sería mejor por inyección de objetos
-    protected static DAOFactory factory = new JPADAOFactory();
+    protected static DAOFactory factory = new JPAFactoryDAO();
 
     public static DAOFactory getFactory() {
         return factory;

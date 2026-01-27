@@ -15,13 +15,8 @@
                 <div class="navbar-brand">Vet<span class="text-highlight">Care</span> | Cliente</div>
                 <nav>
                     <ul class="list-style-none nav-links flex-container align-center">
-                        <li><a class="no-decoration text-light" href="home-cliente.jsp">Home</a></li>
-                        <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/ControlMascota?accion=ingresarModulo">Mis
-                                Mascotas</a></li>
-                        <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/ControlCita?accion=ingresarModulo">Mis Citas</a>
-                        </li>
+                        <li><a class="no-decoration text-light" href="HomeCliente.jsp">Home</a></li>
+
                         <li><a class="no-decoration text-light"
                                 href="<%=request.getContextPath()%>/ControlAutenticacion?accion=logout">Salir</a></li>
                     </ul>
@@ -40,10 +35,10 @@
                             Mascotas</a>
                     </div>
                     <div class="card card-light">
-                        <h2>Agendar Consulta</h2>
-                        <p>Programa una nueva consulta con el veterinario.</p>
+                        <h2>Mis Consultas</h2>
+                        <p>Visualiza tu historial y agenda nuevas citas.</p>
                         <a class="btn btn-primary" style="margin-left: 0;"
-                            href="<%=request.getContextPath()%>/ControlConsulta?accion=iniciarAgendamiento">Agendar</a>
+                            href="<%=request.getContextPath()%>/ControlConsulta?accion=ingresarModulo">Ver Consultas</a>
                     </div>
                 </div>
             </section>

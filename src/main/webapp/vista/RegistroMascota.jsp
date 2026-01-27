@@ -17,12 +17,7 @@
                     <ul class="list-style-none nav-links flex-container align-center">
                         <li><a class="no-decoration text-light"
                                 href="<%=request.getContextPath()%>/vista/HomeCliente.jsp">Home</a></li>
-                        <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/ControlMascota?accion=ingresarModulo">Mis
-                                Mascotas</a></li>
-                        <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/ControlCita?accion=ingresarModulo">Mis Citas</a>
-                        </li>
+
                         <li><a class="no-decoration text-light"
                                 href="<%=request.getContextPath()%>/ControlAutenticacion?accion=logout">Salir</a></li>
                     </ul>
@@ -45,10 +40,25 @@
                                 type="text" name="nombre" required
                                 oninvalid="this.setCustomValidity('Por favor, complete este campo')"
                                 oninput="this.setCustomValidity('')"></div>
-                        <div class="form-group"><label class="form-label">Especie</label><input class="form-control"
-                                type="text" name="especie" required
-                                oninvalid="this.setCustomValidity('Por favor, complete este campo')"
-                                oninput="this.setCustomValidity('')"></div>
+                        <div class="form-group"><label class="form-label">Especie</label>
+                            <select class="form-control" name="especie" required
+                                oninvalid="this.setCustomValidity('Por favor, seleccione una especie')"
+                                oninput="this.setCustomValidity('')">
+                                <option value="">Seleccione...</option>
+                                <option value="Perro">Perro</option>
+                                <option value="Gato">Gato</option>
+                                <option value="Conejo">Conejo</option>
+                                <option value="Hamster">Hamster</option>
+                                <option value="Cobaya">Cobaya (Cuy)</option>
+                                <option value="Ave">Ave</option>
+                                <option value="Tortuga">Tortuga</option>
+                                <option value="Pez">Pez</option>
+                                <option value="Reptil">Reptil</option>
+                                <option value="Hurón">Hurón</option>
+                                <option value="Minipig">Minipig</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
                         <div class="form-group"><label class="form-label">Raza</label><input class="form-control"
                                 type="text" name="raza" required
                                 oninvalid="this.setCustomValidity('Por favor, complete este campo')"

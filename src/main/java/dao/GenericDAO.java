@@ -4,20 +4,16 @@ import java.util.List;
 
 public interface GenericDAO<T, ID> {
 
-    public T getById(ID id);
+    public T obtenerPorId(ID id);
 
-    public List<T> get();
+    public List<T> obtenerTodos();
 
-    public List<T> get(String[] attributes, String[] values); // like + and
+    public void registrar(T entity);
 
-    public List<T> get(String[] attributes, String[] values, String order, int index, int size);
+    public void actualizar(T entity);
 
-    public void create(T entity);
+    public void eliminar(T entity);
 
-    public void update(T entity);
-
-    public void delete(T entity);
-
-    public void deleteByID(ID id);
+    public void eliminarPorId(ID id);
 
 }

@@ -19,28 +19,28 @@ public class RecursoVeterinario {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Veterinario> getVeterinarios() {
-        return DAOFactory.getFactory().getVeterinarioDAO().get();
+        return DAOFactory.getFactory().getVeterinarioDAO().obtenerTodos();
     }
 
     @GET
     @Path("/{cedula}")
     @Produces(MediaType.APPLICATION_JSON)
     public Veterinario getVeterinario(@PathParam("cedula") String cedula) {
-        return DAOFactory.getFactory().getVeterinarioDAO().getById(cedula);
+        return DAOFactory.getFactory().getVeterinarioDAO().obtenerPorCliente(cedula);
     }
 
     @POST
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
     public void guardarVeterinario(Veterinario v) {
-        DAOFactory.getFactory().getVeterinarioDAO().create(v);
+        DAOFactory.getFactory().getVeterinarioDAO().registrar(v);
     }
 
     @PUT
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
     public void actualizarVeterinario(Veterinario v) {
-        DAOFactory.getFactory().getVeterinarioDAO().update(v);
+        DAOFactory.getFactory().getVeterinarioDAO().actualizar(v);
     }
 
     @PUT

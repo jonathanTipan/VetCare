@@ -5,10 +5,8 @@ import java.util.List;
 import dao.GenericDAO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import soporte.JPAUtil;
 
@@ -22,31 +20,31 @@ public class JPAGenericDAO<T, ID> implements GenericDAO<T, ID> {
     }
 
     @Override
-    public void create(T entity) {
+    public void registrar(T entity) {
         em.getTransaction().begin();
         try {
             em.persist(entity);
             em.getTransaction().commit();
         } catch (Exception e) {
-            System.out.println(">>>> ERROR:JPAGenericDAO:create " + e);
+            System.out.println(">>>> ERROR:JPAGenericDAO:registrar " + e);
             if (em.getTransaction().isActive())
                 em.getTransaction().rollback();
         }
     }
 
     @Override
-    public T getById(ID id) {
+    public T obtenerPorId(ID id) {
         return em.find(persistentClass, id);
     }
 
     @Override
-    public void update(T entity) {
+    public void actualizar(T entity) {
         em.getTransaction().begin();
         try {
             em.merge(entity);
             em.getTransaction().commit();
         } catch (Exception e) {
-            System.out.println(">>>> ERROR:JPAGenericDAO:update " + e);
+            System.out.println(">>>> ERROR:JPAGenericDAO:actualizar " + e);
             if (em.getTransaction().isActive())
                 em.getTransaction().rollback();
         }
@@ -54,13 +52,13 @@ public class JPAGenericDAO<T, ID> implements GenericDAO<T, ID> {
     }
 
     @Override
-    public void delete(T entity) {
+    public void eliminar(T entity) {
         em.getTransaction().begin();
         try {
             em.remove(entity);
             em.getTransaction().commit();
         } catch (Exception e) {
-            System.out.println(">>>> ERROR:JPAGenericDAO:delete " + e);
+            System.out.println(">>>> ERROR:JPAGenericDAO:eliminar " + e);
             if (em.getTransaction().isActive())
                 em.getTransaction().rollback();
         }
@@ -68,74 +66,16 @@ public class JPAGenericDAO<T, ID> implements GenericDAO<T, ID> {
     }
 
     @Override
-    public void deleteByID(ID id) {
-        T entity = this.getById(id);
+    public void eliminarPorId(ID id) {
+        T entity = this.obtenerPorId(id);
         if (entity != null)
-            this.delete(entity);
+            this.eliminar(entity);
 
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<T> get(String[] attributes, String[] values) {
-        // Se crea un criterio de consulta
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.persistentClass);
-        // Se establece la clausula FROM
-        Root<T> root = criteriaQuery.from(this.persistentClass);
-        // Se establece la clausula SELECT
-        criteriaQuery.select(root);
-        // Se configuran los predicados, combinados por AND
-        Predicate predicate = criteriaBuilder.conjunction();
-        for (int i = 0; i < attributes.length; i++) {
-            Predicate sig = criteriaBuilder.like(root.get(attributes[i]).as(String.class), values[i]);
-            predicate = criteriaBuilder.and(predicate, sig);
-        }
-        // Se establece el WHERE
-        criteriaQuery.where(predicate);
-
-        Query query = em.createQuery(criteriaQuery);
-        return query.getResultList();
-
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<T> get(String[] attributes, String[] values, String order, int index, int size) {
-        // Se crea un criterio de consulta
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.persistentClass);
-        // Se establece la clausula FROM
-        Root<T> root = criteriaQuery.from(this.persistentClass);
-        // Se establece la clausula SELECT
-        criteriaQuery.select(root);
-        // Se configuran los predicados, combinados por AND
-        Predicate predicate = criteriaBuilder.conjunction();
-        for (int i = 0; i < attributes.length; i++) {
-            Predicate sig = criteriaBuilder.like(root.get(attributes[i]).as(String.class), values[i]);
-            predicate = criteriaBuilder.and(predicate, sig);
-        }
-        // Se establece el WHERE
-        criteriaQuery.where(predicate);
-        // Se establece el orden
-        if (order != null)
-            criteriaQuery.orderBy(criteriaBuilder.asc(root.get(order)));
-        // Se crea el resultado
-        if (index >= 0 && size > 0) {
-            TypedQuery<T> tq = em.createQuery(criteriaQuery);
-            tq.setFirstResult(index);
-            tq.setMaxResults(size); // Se realiza la query
-            return tq.getResultList();
-        } else {
-            // Se realiza la query
-            Query query = em.createQuery(criteriaQuery);
-            return query.getResultList();
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<T> get() {
+    public List<T> obtenerTodos() {
         // Se crea un criterio de consulta
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(this.persistentClass);

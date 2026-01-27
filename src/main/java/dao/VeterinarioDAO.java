@@ -8,4 +8,6 @@ public interface VeterinarioDAO extends GenericDAO<Veterinario, String> {
 
     public boolean validarDuplicado(String cedula);
 
+    public java.util.List<Veterinario> obtenerTodos();
+
 }

@@ -20,11 +20,6 @@ public class Receta implements Serializable {
 
     private String frecuencia;
 
-    @Temporal(TemporalType.DATE)
-    private Date fecha;
-
-    private String estado;
-
     private String duracion;
 
     @ManyToOne
@@ -64,22 +59,6 @@ public class Receta implements Serializable {
 
     public void setFrecuencia(String frecuencia) {
         this.frecuencia = frecuencia;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
     }
 
     public String getDuracion() {

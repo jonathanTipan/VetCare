@@ -24,9 +24,7 @@
                                             href="<%=request.getContextPath()%>/vista/HomeCliente.jsp">Home</a></li>
                                     <% } %>
 
-                                        <li><a class="no-decoration text-light"
-                                                href="<%=request.getContextPath()%>/ControlConsulta?accion=ingresarModulo">Agenda/Consultas</a>
-                                        </li>
+
                                         <li><a class="no-decoration text-light"
                                                 href="<%=request.getContextPath()%>/ControlAutenticacion?accion=logout">Salir</a>
                                         </li>
@@ -39,6 +37,11 @@
                 <section class="card">
                     <div class="flex-container justify-space-between align-center">
                         <h1>Lista de Consultas</h1>
+                        <% if (u instanceof modelo.Cliente) { %>
+                            <a class="btn btn-primary"
+                                href="<%=request.getContextPath()%>/ControlConsulta?accion=iniciarAgendamiento">Agendar
+                                Consulta</a>
+                            <% } %>
                     </div>
 
                     <% String mensaje=(String) request.getAttribute("mensaje"); if (mensaje==null) {
@@ -65,7 +68,9 @@
                                                         <th>Veterinario</th>
                                                         <th>Motivo</th>
                                                         <th>Estado</th>
-                                                        <th>Acciones</th>
+                                                        <% if (u instanceof modelo.Veterinario) { %>
+                                                            <th>Acciones</th>
+                                                            <% } %>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -99,42 +104,25 @@
                                                                     <%= c.getEstado() !=null ? c.getEstado() : "-" %>
                                                                 </span>
                                                             </td>
-                                                            <td>
-                                                                <!-- Acciones para cliente -->
-                                                                <% if (u instanceof modelo.Cliente && "AGENDADA"
-                                                                    .equals(c.getEstado())) { %>
-                                                                    <a class="btn btn-sm btn-secondary"
-                                                                        href="<%=request.getContextPath()%>/ControlConsulta?accion=cancelarConsulta&id=<%= c.getId() %>">Cancelar
-                                                                        Consulta</a>
-                                                                    <% } %>
-
-                                                                        <!-- Acciones para veterinario -->
-                                                                        <% if (u instanceof modelo.Veterinario) { if
-                                                                            ("AGENDADA".equals(c.getEstado())) { %>
-                                                                            <a class="btn btn-sm btn-primary"
-                                                                                href="<%=request.getContextPath()%>/ControlConsulta?accion=iniciarAtencion&idConsulta=<%= c.getId() %>">Registrar
-                                                                                Consulta</a>
-                                                                            <% } else if
-                                                                                ("ATENDIDA".equals(c.getEstado())) { %>
-                                                                                <span class="text-muted">Atendida</span>
-                                                                                <!-- Optional: Link to see details or edit -->
-                                                                                <% } } %>
-                                                            </td>
+                                                            <% if (u instanceof modelo.Veterinario) { %>
+                                                                <td>
+                                                                    <% if ("AGENDADA".equals(c.getEstado())) { %>
+                                                                        <a class="btn btn-sm btn-primary"
+                                                                            href="<%=request.getContextPath()%>/ControlConsulta?accion=iniciarAtencion&idConsulta=<%= c.getId() %>">Registrar
+                                                                            Consulta</a>
+                                                                        <% } else if ("ATENDIDA".equals(c.getEstado()))
+                                                                            { %>
+                                                                            <span class="text-muted">Atendida</span>
+                                                                            <% } %>
+                                                                </td>
+                                                                <% } %>
                                                         </tr>
                                                         <% } %>
                                                 </tbody>
                                             </table>
                                             <% } %>
 
-                                                <div class="form-group margin-custom">
-                                                    <% if (u instanceof modelo.Veterinario) { %>
-                                                        <a class="btn btn-secondary"
-                                                            href="<%=request.getContextPath()%>/vista/HomeVeterinario.jsp">Volver</a>
-                                                        <% } else { %>
-                                                            <a class="btn btn-secondary"
-                                                                href="<%=request.getContextPath()%>/vista/HomeCliente.jsp">Volver</a>
-                                                            <% } %>
-                                                </div>
+
                                                 </div>
                 </section>
             </main>

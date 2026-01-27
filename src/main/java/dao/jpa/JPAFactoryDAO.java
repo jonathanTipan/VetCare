@@ -8,7 +8,7 @@ import dao.RecetaDAO;
 import dao.UsuarioDAO;
 import dao.VeterinarioDAO;
 
-public class JPADAOFactory extends DAOFactory {
+public class JPAFactoryDAO extends DAOFactory {
 
     @Override
     public UsuarioDAO getUsuarioDAO() {

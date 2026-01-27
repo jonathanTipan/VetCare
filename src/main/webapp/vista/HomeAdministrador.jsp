@@ -16,9 +16,7 @@
                     <ul class="list-style-none nav-links flex-container align-center">
                         <li><a class="no-decoration text-light"
                                 href="<%=request.getContextPath()%>/vista/HomeAdministrador.jsp">Home</a></li>
-                        <li><a class="no-decoration text-light"
-                                href="<%=request.getContextPath()%>/ControlVeterinario?accion=ingresarModulo">Usuarios</a>
-                        </li>
+
                         <li><a class="no-decoration text-light"
                                 href="<%=request.getContextPath()%>/ControlAutenticacion?accion=logout">Salir</a></li>
                     </ul>
@@ -33,7 +31,7 @@
                         <h2>Gestión de Usuarios</h2>
                         <p>Administra clientes y veterinarios.</p>
                         <a class="btn btn-primary" style="margin-left: 0;"
-                            href="<%=request.getContextPath()%>/ControlVeterinario?accion=ingresarModulo">Gestionar</a>
+                            href="<%=request.getContextPath()%>/ControlVeterinario?accion=ingresarModulo">Ver Veterinarios</a>
                     </div>
                 </div>
             </section>

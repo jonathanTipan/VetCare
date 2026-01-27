@@ -64,7 +64,7 @@ public class ControlVeterinario extends HttpServlet {
     }
 
     private void ingresarModulo(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Veterinario> lista = DAOFactory.getFactory().getVeterinarioDAO().get();
+        List<Veterinario> lista = DAOFactory.getFactory().getVeterinarioDAO().obtenerTodos();
         req.setAttribute("veterinarios", lista);
         req.getRequestDispatcher("vista/GestionVeterinarios.jsp").forward(req, resp);
     }
@@ -95,7 +95,7 @@ public class ControlVeterinario extends HttpServlet {
         }
 
         try {
-            DAOFactory.getFactory().getVeterinarioDAO().create(v);
+            DAOFactory.getFactory().getVeterinarioDAO().registrar(v);
             req.getSession().setAttribute("mensaje", "Veterinario registrado exitosamente");
             resp.sendRedirect("ControlVeterinario?accion=ingresarModulo");
         } catch (Exception e) {
@@ -107,7 +107,7 @@ public class ControlVeterinario extends HttpServlet {
     private void iniciarEdicion(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String cedula = req.getParameter("cedula");
         Veterinario veterinario = (cedula != null && !cedula.isEmpty())
-                ? DAOFactory.getFactory().getVeterinarioDAO().getById(cedula)
+                ? DAOFactory.getFactory().getVeterinarioDAO().obtenerPorId(cedula)
                 : null;
 
         if (veterinario != null) {
@@ -131,19 +131,15 @@ public class ControlVeterinario extends HttpServlet {
         String clave = req.getParameter("clave");
 
         // Validación simple
-        if (v.getNombre() == null || v.getNombre().trim().isEmpty() ||
-                v.getApellido() == null || v.getApellido().trim().isEmpty() ||
-                v.getEspecialidad() == null || v.getEspecialidad().trim().isEmpty() ||
-                v.getUsuario() == null || v.getUsuario().trim().isEmpty() ||
-                v.getNumeroLicencia() == null || v.getNumeroLicencia().trim().isEmpty()) {
-
+        // Validación simple
+        if (datosIncompletos(v)) {
             req.setAttribute("veterinario", v);
             req.setAttribute("mensaje", "Campos están incompletos");
             req.getRequestDispatcher("vista/EdicionVeterinario.jsp").forward(req, resp);
             return;
         }
 
-        Veterinario vBD = DAOFactory.getFactory().getVeterinarioDAO().getById(v.getCedula());
+        Veterinario vBD = DAOFactory.getFactory().getVeterinarioDAO().obtenerPorId(v.getCedula());
         if (vBD != null) {
             vBD.setNombre(v.getNombre());
             vBD.setApellido(v.getApellido());
@@ -156,7 +152,7 @@ public class ControlVeterinario extends HttpServlet {
             }
 
             try {
-                DAOFactory.getFactory().getVeterinarioDAO().update(vBD);
+                DAOFactory.getFactory().getVeterinarioDAO().actualizar(vBD);
                 req.getSession().setAttribute("mensaje", "Actualización exitosa");
             } catch (Exception e) {
                 req.getSession().setAttribute("mensaje", "Error al actualizar veterinario");
@@ -183,7 +179,7 @@ public class ControlVeterinario extends HttpServlet {
             throws ServletException, IOException {
         String cedula = req.getParameter("cedula");
         Veterinario veterinario = (cedula != null && !cedula.isEmpty())
-                ? DAOFactory.getFactory().getVeterinarioDAO().getById(cedula)
+                ? DAOFactory.getFactory().getVeterinarioDAO().obtenerPorId(cedula)
                 : null;
 
         if (veterinario != null) {
@@ -199,5 +195,13 @@ public class ControlVeterinario extends HttpServlet {
 
     private void cancelar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.sendRedirect("ControlVeterinario?accion=ingresarModulo");
+    }
+
+    private boolean datosIncompletos(Veterinario v) {
+        return v.getNombre() == null || v.getNombre().trim().isEmpty() ||
+                v.getApellido() == null || v.getApellido().trim().isEmpty() ||
+                v.getEspecialidad() == null || v.getEspecialidad().trim().isEmpty() ||
+                v.getUsuario() == null || v.getUsuario().trim().isEmpty() ||
+                v.getNumeroLicencia() == null || v.getNumeroLicencia().trim().isEmpty();
     }
 }
