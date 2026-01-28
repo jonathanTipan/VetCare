@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import dao.DAOFactory;
+import dao.FactoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -91,7 +91,7 @@ public class ControlConsulta extends HttpServlet {
 
     private void ingresarModulo(HttpServletRequest req, HttpServletResponse resp, Usuario u)
             throws ServletException, IOException {
-        List<Consulta> consultas = DAOFactory.getFactory().getConsultaDAO().obtenerPorUsuario(u);
+        List<Consulta> consultas = FactoryDAO.getFactory().getConsultaDAO().obtenerPorUsuario(u);
         req.setAttribute("consultas", consultas);
         req.getRequestDispatcher("vista/GestionConsultas.jsp").forward(req, resp);
     }
@@ -99,8 +99,8 @@ public class ControlConsulta extends HttpServlet {
     private void iniciarAgendamiento(HttpServletRequest req, HttpServletResponse resp, Usuario u)
             throws ServletException, IOException {
         if (u instanceof Cliente) {
-            req.setAttribute("veterinarios", DAOFactory.getFactory().getVeterinarioDAO().obtenerTodos());
-            req.setAttribute("mascotas", DAOFactory.getFactory().getMascotaDAO().obtenerPorCliente(u.getCedula()));
+            req.setAttribute("veterinarios", FactoryDAO.getFactory().getVeterinarioDAO().obtenerTodos());
+            req.setAttribute("mascotas", FactoryDAO.getFactory().getMascotaDAO().obtenerPorCliente(u.getCedula()));
             req.getRequestDispatcher("vista/AgendamientoConsulta.jsp").forward(req, resp);
         } else {
             req.setAttribute("mensaje", "Acción no permitida");
@@ -132,7 +132,7 @@ public class ControlConsulta extends HttpServlet {
             consulta.setHora(Time.valueOf(horaStr));
 
             if (idMascotaStr != null) {
-                Mascota mascota = DAOFactory.getFactory().getMascotaDAO().obtenerPorId(Integer.parseInt(idMascotaStr));
+                Mascota mascota = FactoryDAO.getFactory().getMascotaDAO().obtenerPorId(Integer.parseInt(idMascotaStr));
                 if (u instanceof Cliente && mascota != null
                         && !mascota.getCliente().getCedula().equals(u.getCedula())) {
                     throw new Exception("No tiene permiso para agendar a esta mascota");
@@ -141,10 +141,10 @@ public class ControlConsulta extends HttpServlet {
             }
 
             consulta.setVeterinario((cedula != null && !cedula.isEmpty())
-                    ? DAOFactory.getFactory().getVeterinarioDAO().obtenerPorId(cedula)
+                    ? FactoryDAO.getFactory().getVeterinarioDAO().obtenerPorId(cedula)
                     : null);
 
-            DAOFactory.getFactory().getConsultaDAO().registrar(consulta);
+            FactoryDAO.getFactory().getConsultaDAO().registrar(consulta);
             req.getSession().setAttribute("mensaje", "Consulta agendada exitosamente");
             resp.sendRedirect("ControlConsulta?accion=ingresarModulo");
 
@@ -159,7 +159,7 @@ public class ControlConsulta extends HttpServlet {
             throws ServletException, IOException {
         String id = req.getParameter("idConsulta");
         if (id != null && !id.isEmpty()) {
-            Consulta c = DAOFactory.getFactory().getConsultaDAO().obtenerPorId(Integer.parseInt(id));
+            Consulta c = FactoryDAO.getFactory().getConsultaDAO().obtenerPorId(Integer.parseInt(id));
             if (c != null) {
                 req.getSession().setAttribute("consultaEnAtencion", c);
                 req.setAttribute("consulta", c);
@@ -175,7 +175,7 @@ public class ControlConsulta extends HttpServlet {
             throws ServletException, IOException {
         try {
             int id = Integer.parseInt(req.getParameter("idConsulta"));
-            Consulta c = DAOFactory.getFactory().getConsultaDAO().obtenerPorId(id);
+            Consulta c = FactoryDAO.getFactory().getConsultaDAO().obtenerPorId(id);
 
             if (c != null) {
                 c.setSintomas(req.getParameter("sintomas"));
@@ -184,7 +184,7 @@ public class ControlConsulta extends HttpServlet {
                 c.setObservaciones(req.getParameter("observaciones"));
                 c.setEstado("ATENDIDA");
 
-                DAOFactory.getFactory().getConsultaDAO().actualizar(c);
+                FactoryDAO.getFactory().getConsultaDAO().actualizar(c);
                 req.getSession().setAttribute("mensaje", "Consulta finalizada exitosamente");
                 resp.sendRedirect("ControlConsulta?accion=ingresarModulo");
             }
@@ -201,7 +201,7 @@ public class ControlConsulta extends HttpServlet {
         if (idStr != null) {
             try {
                 int idConsulta = Integer.parseInt(idStr);
-                Consulta c = DAOFactory.getFactory().getConsultaDAO().obtenerPorId(idConsulta);
+                Consulta c = FactoryDAO.getFactory().getConsultaDAO().obtenerPorId(idConsulta);
 
                 if (c != null) {
                     // Preservar datos del formulario
@@ -235,7 +235,7 @@ public class ControlConsulta extends HttpServlet {
 
         try {
             int idConsulta = Integer.parseInt(id);
-            Consulta consulta = DAOFactory.getFactory().getConsultaDAO().obtenerPorId(idConsulta);
+            Consulta consulta = FactoryDAO.getFactory().getConsultaDAO().obtenerPorId(idConsulta);
 
             if (consulta != null) {
                 Receta receta = new Receta();
@@ -245,7 +245,7 @@ public class ControlConsulta extends HttpServlet {
                 receta.setFrecuencia(req.getParameter("frecuencia"));
                 receta.setDuracion(req.getParameter("duracion"));
 
-                DAOFactory.getFactory().getRecetaDAO().registrar(receta);
+                FactoryDAO.getFactory().getRecetaDAO().registrar(receta);
 
                 req.setAttribute("mensaje", "Receta guardada correctamente");
 
@@ -275,7 +275,7 @@ public class ControlConsulta extends HttpServlet {
         String id = req.getParameter("idConsulta");
         try {
             int idConsulta = Integer.parseInt(id);
-            Consulta consulta = DAOFactory.getFactory().getConsultaDAO().obtenerPorId(idConsulta);
+            Consulta consulta = FactoryDAO.getFactory().getConsultaDAO().obtenerPorId(idConsulta);
 
             if (consulta != null) {
                 // Restaurar datos
@@ -315,7 +315,7 @@ public class ControlConsulta extends HttpServlet {
             Date fechaUtil = new SimpleDateFormat("yyyy-MM-dd").parse(fechaStr);
             java.sql.Date fecha = new java.sql.Date(fechaUtil.getTime());
 
-            List<java.sql.Time> occupiedSlots = DAOFactory.getFactory().getConsultaDAO()
+            List<java.sql.Time> occupiedSlots = FactoryDAO.getFactory().getConsultaDAO()
                     .obtenerConsultasDisponibles(fecha, cedula);
 
             int startHour = 8;

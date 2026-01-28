@@ -2,7 +2,7 @@ package recursos;
 
 import java.util.List;
 
-import dao.DAOFactory;
+import dao.FactoryDAO;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -19,33 +19,33 @@ public class RecursoVeterinario {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Veterinario> getVeterinarios() {
-        return DAOFactory.getFactory().getVeterinarioDAO().obtenerTodos();
+        return FactoryDAO.getFactory().getVeterinarioDAO().obtenerTodos();
     }
 
     @GET
     @Path("/{cedula}")
     @Produces(MediaType.APPLICATION_JSON)
     public Veterinario getVeterinario(@PathParam("cedula") String cedula) {
-        return DAOFactory.getFactory().getVeterinarioDAO().obtenerPorCliente(cedula);
+        return FactoryDAO.getFactory().getVeterinarioDAO().obtenerPorId(cedula);
     }
 
     @POST
     @Path("/add")
     @Consumes(MediaType.APPLICATION_JSON)
     public void guardarVeterinario(Veterinario v) {
-        DAOFactory.getFactory().getVeterinarioDAO().registrar(v);
+        FactoryDAO.getFactory().getVeterinarioDAO().registrar(v);
     }
 
     @PUT
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
     public void actualizarVeterinario(Veterinario v) {
-        DAOFactory.getFactory().getVeterinarioDAO().actualizar(v);
+        FactoryDAO.getFactory().getVeterinarioDAO().actualizar(v);
     }
 
     @PUT
     @Path("/deactivate/{cedula}")
     public void desactivarVeterinario(@PathParam("cedula") String cedula) {
-        DAOFactory.getFactory().getVeterinarioDAO().desactivarVeterinario(cedula);
+        FactoryDAO.getFactory().getVeterinarioDAO().desactivarVeterinario(cedula);
     }
 }

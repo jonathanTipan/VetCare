@@ -2,7 +2,7 @@ package controlador;
 
 import java.io.IOException;
 
-import dao.DAOFactory;
+import dao.FactoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -47,7 +47,7 @@ public class ControlAutenticacion extends HttpServlet {
     }
 
     private void iniciar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        java.util.List<String> roles = DAOFactory.getFactory().getUsuarioDAO().obtenerRoles();
+        java.util.List<String> roles = FactoryDAO.getFactory().getUsuarioDAO().obtenerRoles();
         req.setAttribute("roles", roles);
         req.getRequestDispatcher("vista/Login.jsp").forward(req, resp);
     }
@@ -66,7 +66,7 @@ public class ControlAutenticacion extends HttpServlet {
         String clave = req.getParameter("clave");
         String idRol = req.getParameter("rol"); // El rol seleccionado en el JSP
 
-        Usuario u = DAOFactory.getFactory().getUsuarioDAO().autenticarse(usuario, clave);
+        Usuario u = FactoryDAO.getFactory().getUsuarioDAO().autenticarse(usuario, clave);
 
         if (u != null) {
             String userRol = u.getRol(); // Obtenemos el rol real del usuario (DTYPE)

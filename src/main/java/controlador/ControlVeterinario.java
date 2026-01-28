@@ -3,7 +3,7 @@ package controlador;
 import java.io.IOException;
 import java.util.List;
 
-import dao.DAOFactory;
+import dao.FactoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -64,7 +64,7 @@ public class ControlVeterinario extends HttpServlet {
     }
 
     private void ingresarModulo(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Veterinario> lista = DAOFactory.getFactory().getVeterinarioDAO().obtenerTodos();
+        List<Veterinario> lista = FactoryDAO.getFactory().getVeterinarioDAO().obtenerTodos();
         req.setAttribute("veterinarios", lista);
         req.getRequestDispatcher("vista/GestionVeterinarios.jsp").forward(req, resp);
     }
@@ -87,7 +87,7 @@ public class ControlVeterinario extends HttpServlet {
         v.setClave(req.getParameter("clave"));
         v.setEstado("ACTIVO");
 
-        if (DAOFactory.getFactory().getVeterinarioDAO().validarDuplicado(v.getCedula())) {
+        if (FactoryDAO.getFactory().getVeterinarioDAO().validarDuplicado(v.getCedula())) {
             req.setAttribute("veterinario", v);
             req.setAttribute("mensaje", "El veterinario con esta cédula o usuario ya existe.");
             req.getRequestDispatcher("vista/RegistroVeterinario.jsp").forward(req, resp);
@@ -95,7 +95,7 @@ public class ControlVeterinario extends HttpServlet {
         }
 
         try {
-            DAOFactory.getFactory().getVeterinarioDAO().registrar(v);
+            FactoryDAO.getFactory().getVeterinarioDAO().registrar(v);
             req.getSession().setAttribute("mensaje", "Veterinario registrado exitosamente");
             resp.sendRedirect("ControlVeterinario?accion=ingresarModulo");
         } catch (Exception e) {
@@ -107,7 +107,7 @@ public class ControlVeterinario extends HttpServlet {
     private void iniciarEdicion(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String cedula = req.getParameter("cedula");
         Veterinario veterinario = (cedula != null && !cedula.isEmpty())
-                ? DAOFactory.getFactory().getVeterinarioDAO().obtenerPorId(cedula)
+                ? FactoryDAO.getFactory().getVeterinarioDAO().obtenerPorId(cedula)
                 : null;
 
         if (veterinario != null) {
@@ -139,7 +139,7 @@ public class ControlVeterinario extends HttpServlet {
             return;
         }
 
-        Veterinario vBD = DAOFactory.getFactory().getVeterinarioDAO().obtenerPorId(v.getCedula());
+        Veterinario vBD = FactoryDAO.getFactory().getVeterinarioDAO().obtenerPorId(v.getCedula());
         if (vBD != null) {
             vBD.setNombre(v.getNombre());
             vBD.setApellido(v.getApellido());
@@ -152,7 +152,7 @@ public class ControlVeterinario extends HttpServlet {
             }
 
             try {
-                DAOFactory.getFactory().getVeterinarioDAO().actualizar(vBD);
+                FactoryDAO.getFactory().getVeterinarioDAO().actualizar(vBD);
                 req.getSession().setAttribute("mensaje", "Actualización exitosa");
             } catch (Exception e) {
                 req.getSession().setAttribute("mensaje", "Error al actualizar veterinario");
@@ -165,7 +165,7 @@ public class ControlVeterinario extends HttpServlet {
             throws ServletException, IOException {
         String cedula = req.getParameter("cedula");
         if (cedula != null && !cedula.isEmpty()) {
-            boolean resultado = DAOFactory.getFactory().getVeterinarioDAO().desactivarVeterinario(cedula);
+            boolean resultado = FactoryDAO.getFactory().getVeterinarioDAO().desactivarVeterinario(cedula);
             if (resultado) {
                 req.getSession().setAttribute("mensaje", "Veterinario desactivado exitosamente");
             } else {
@@ -179,7 +179,7 @@ public class ControlVeterinario extends HttpServlet {
             throws ServletException, IOException {
         String cedula = req.getParameter("cedula");
         Veterinario veterinario = (cedula != null && !cedula.isEmpty())
-                ? DAOFactory.getFactory().getVeterinarioDAO().obtenerPorId(cedula)
+                ? FactoryDAO.getFactory().getVeterinarioDAO().obtenerPorId(cedula)
                 : null;
 
         if (veterinario != null) {

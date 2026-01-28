@@ -2,13 +2,13 @@ package dao.jpa;
 
 import dao.ClienteDAO;
 import dao.ConsultaDAO;
-import dao.DAOFactory;
+import dao.FactoryDAO;
 import dao.MascotaDAO;
 import dao.RecetaDAO;
 import dao.UsuarioDAO;
 import dao.VeterinarioDAO;
 
-public class JPAFactoryDAO extends DAOFactory {
+public class JPAFactoryDAO extends FactoryDAO {
 
     @Override
     public UsuarioDAO getUsuarioDAO() {

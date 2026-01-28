@@ -3,7 +3,7 @@ package controlador;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
-import dao.DAOFactory;
+import dao.FactoryDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -74,7 +74,7 @@ public class ControlMascota extends HttpServlet {
 
     private void ingresarModulo(HttpServletRequest req, HttpServletResponse resp, String cedulaCliente)
             throws ServletException, IOException {
-        req.setAttribute("mascotas", DAOFactory.getFactory().getMascotaDAO().obtenerPorCliente(cedulaCliente));
+        req.setAttribute("mascotas", FactoryDAO.getFactory().getMascotaDAO().obtenerPorCliente(cedulaCliente));
         req.getRequestDispatcher("vista/GestionMascotas.jsp").forward(req, resp);
     }
 
@@ -107,7 +107,7 @@ public class ControlMascota extends HttpServlet {
                 mascota.setPeso(Double.parseDouble(pesoStr));
 
             try {
-                DAOFactory.getFactory().getMascotaDAO().registrar(mascota);
+                FactoryDAO.getFactory().getMascotaDAO().registrar(mascota);
                 req.getSession().setAttribute("mensaje", "Mascota registrada exitosamente");
                 resp.sendRedirect("ControlMascota?accion=ingresarModulo");
             } catch (Exception e) {
@@ -126,7 +126,7 @@ public class ControlMascota extends HttpServlet {
             throws ServletException, IOException {
         String idStr = req.getParameter("id");
         if (idStr != null && !idStr.isEmpty()) {
-            Mascota mascota = DAOFactory.getFactory().getMascotaDAO().obtenerPorId(Integer.parseInt(idStr));
+            Mascota mascota = FactoryDAO.getFactory().getMascotaDAO().obtenerPorId(Integer.parseInt(idStr));
             if (mascota != null && mascota.getCliente().getCedula().equals(cedulaCliente)) {
                 req.setAttribute("mascota", mascota);
                 req.getRequestDispatcher("vista/EdicionMascota.jsp").forward(req, resp);
@@ -142,7 +142,7 @@ public class ControlMascota extends HttpServlet {
             throws ServletException, IOException {
         String idStr = req.getParameter("id");
         if (idStr != null && !idStr.isEmpty()) {
-            Mascota mascota = DAOFactory.getFactory().getMascotaDAO().obtenerPorId(Integer.parseInt(idStr));
+            Mascota mascota = FactoryDAO.getFactory().getMascotaDAO().obtenerPorId(Integer.parseInt(idStr));
 
             if (mascota != null && mascota.getCliente().getCedula().equals(cedulaCliente)) {
                 try {
@@ -164,7 +164,7 @@ public class ControlMascota extends HttpServlet {
                     if (pesoStr != null && !pesoStr.isEmpty())
                         mascota.setPeso(Double.parseDouble(pesoStr));
 
-                    DAOFactory.getFactory().getMascotaDAO().actualizar(mascota);
+                    FactoryDAO.getFactory().getMascotaDAO().actualizar(mascota);
                     req.getSession().setAttribute("mensaje", "Mascota actualizada exitosamente");
 
                 } catch (Exception e) {
@@ -182,10 +182,10 @@ public class ControlMascota extends HttpServlet {
             throws ServletException, IOException {
         String idStr = req.getParameter("id");
         if (idStr != null && !idStr.isEmpty()) {
-            Mascota mascota = DAOFactory.getFactory().getMascotaDAO().obtenerPorId(Integer.parseInt(idStr));
+            Mascota mascota = FactoryDAO.getFactory().getMascotaDAO().obtenerPorId(Integer.parseInt(idStr));
             if (mascota != null && mascota.getCliente().getCedula().equals(cedulaCliente)) {
                 try {
-                    DAOFactory.getFactory().getMascotaDAO().eliminarPorId(mascota.getId());
+                    FactoryDAO.getFactory().getMascotaDAO().eliminarPorId(mascota.getId());
                     req.getSession().setAttribute("mensaje", "Mascota eliminada exitosamente");
                 } catch (Exception e) {
                     req.getSession().setAttribute("mensaje", "Error al eliminar mascota");
